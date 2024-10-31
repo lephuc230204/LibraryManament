@@ -23,11 +23,20 @@ public class Book {
     @ManyToOne
     @JoinColumn( name = "category_id", nullable = false)
     private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private Author author;
+
     private String publisher;
     @JsonFormat( shape = JsonFormat.Shape.STRING, pattern = "dd-mm-yyyy")
     private LocalDate postingDate;
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @OneToOne
+    @JoinColumn(name = "crack_id")
+    private Crack crack;
 
     public enum Status {
         AVAILABLE,   // Chưa được mượn
