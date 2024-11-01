@@ -29,7 +29,7 @@ public class Book {
     private Author author;
 
     private String publisher;
-    @JsonFormat( shape = JsonFormat.Shape.STRING, pattern = "dd-mm-yyyy")
+    @JsonFormat( shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate postingDate;
     @Enumerated(EnumType.STRING)
     private Status status;

@@ -23,14 +23,15 @@ public class DataInitialization {
     private final RoleRepository roleRepository;
     private final AuthorRepository authorRepository;
     private final CrackRepository crackRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
     public void initData() {
         // Tạo Role
         Role adminRole = new Role();
-        adminRole.setName("ADMIN");
+        adminRole.setName("ROLE_ADMIN");
         Role userRole = new Role();
-        userRole.setName("USER");
+        userRole.setName("ROLE_USER");
         roleRepository.save(adminRole);
         roleRepository.save(userRole);
 
@@ -99,8 +100,8 @@ public class DataInitialization {
         // Tạo User
         User adminUser = new User();
         adminUser.setUsername("admin");
-        adminUser.setEmail("admin@example.com");
-        adminUser.setPassword("123456"); // mã hóa mật khẩu khi lưu vào thực tế
+        adminUser.setEmail("admin@gmail.com");
+        adminUser.setPassword(passwordEncoder.encode("123456")); // mã hóa mật khẩu khi lưu vào thực tế
         adminUser.setRole(adminRole);
         adminUser.setCreatedDate(LocalDate.now());
         adminUser.setStatus("ACTIVE");
@@ -108,8 +109,8 @@ public class DataInitialization {
 
         User regularUser = new User();
         regularUser.setUsername("user");
-        regularUser.setEmail("user@example.com");
-        regularUser.setPassword("12"); // mã hóa mật khẩu khi lưu vào thực tế
+        regularUser.setEmail("user@gmail.com");
+        regularUser.setPassword(passwordEncoder.encode("123456")); // mã hóa mật khẩu khi lưu vào thực tế
         regularUser.setRole(userRole);
         regularUser.setCreatedDate(LocalDate.now());
         regularUser.setStatus("ACTIVE");
