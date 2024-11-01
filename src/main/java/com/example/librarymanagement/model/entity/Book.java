@@ -19,6 +19,7 @@ public class Book {
     private Long bookId;
     private String bookName;
     private Long quantity;
+    private Long currentQuantity;
 
     @ManyToOne
     @JoinColumn( name = "category_id", nullable = false)

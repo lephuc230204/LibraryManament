@@ -69,8 +69,6 @@ public class UserServiceImpl implements UserService {
 
         user.setUsername(form.getUsername());
         user.setPhone(form.getPhone());
-        user.setAddress(form.getAddress());
-        user.setProfilePicture(form.getProfilePicture());
 
         userRepository.save(user);
         return new ResponseData<>(200, "User updated successfully");
@@ -83,9 +81,7 @@ public class UserServiceImpl implements UserService {
 
         user.setUsername(form.getUsername());
         user.setPhone(form.getPhone());
-        user.setAddress(form.getAddress());
         user.setDob(form.getDob());
-        user.setProfilePicture(form.getProfilePicture());
 
         userRepository.save(user);
         return new ResponseData<>(200, "User updated successfully");

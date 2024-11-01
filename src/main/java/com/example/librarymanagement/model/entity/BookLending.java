@@ -17,6 +17,9 @@ public class BookLending {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long lendingId;
+    @OneToOne
+    @JoinColumn( name = "book_id")
+    private Book book;
 
     @JsonFormat( pattern = "dd-MM-yyyy")
     private LocalDate creationDate;

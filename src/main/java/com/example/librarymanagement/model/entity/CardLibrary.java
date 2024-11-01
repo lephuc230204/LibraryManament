@@ -18,6 +18,10 @@ public class CardLibrary {
     @Id
     private String cardNumber;
 
+    @OneToOne
+    @JoinColumn( name = "user_id")
+    private User user;
+
     @JsonFormat( pattern = "dd-MM-yyyy")
     private LocalDate issued;
     @Enumerated(EnumType.STRING)

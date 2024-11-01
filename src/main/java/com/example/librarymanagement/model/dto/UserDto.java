@@ -17,8 +17,6 @@ public class UserDto {
     private String username;
     private String email;
     private String phone;
-    private String address;
-    private String profilePicture;
     private String roleName;
     private LocalDate createdDate;
     private LocalDate dob;
@@ -30,8 +28,6 @@ public class UserDto {
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .phone(user.getPhone())
-                .address(user.getAddress().toString())
-                .profilePicture(user.getProfilePicture())
                 .roleName(user.getRole() != null ? user.getRole().getName() : null)
                 .createdDate(user.getCreatedDate())
                 .dob(user.getDob())

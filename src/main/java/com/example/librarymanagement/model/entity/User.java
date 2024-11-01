@@ -28,7 +28,6 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String email;
     private String phone;
-    private String address;
 
     @Column(nullable = false)
     private String password;
@@ -43,8 +42,6 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String status = "ACTIVE";
-
-    private String profilePicture;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
