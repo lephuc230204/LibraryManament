@@ -7,6 +7,13 @@ import com.example.librarymanagement.payload.response.ResponseData;
 import java.util.List;
 
 public interface BookService {
-    ResponseData<List<BookDto>> getAll();
+    // THEM
     ResponseData<Void> create(BookForm form);
+    // XOA
+
+    // UPDATE
+
+    // GET ALL
+    ResponseData<List<BookDto>> getAll();
+    //
 }

@@ -74,37 +74,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseData<String> register(SignUpForm form) {
-        if (userRepository.existsByEmail(form.getEmail())) {
-            throw new EmailAlreadyExistsException("Email already exists");
-        }
 
-        Role role = roleRepository.findByName("ROLE_USER").orElse(null);
-        if(role == null){
-            return new ResponseError<>(404,"Not found role ROLE_USER");
-        }
-
-        // Tạo mã xác thực
-        String otpCode = String.format("%06d", new Random().nextInt(999999));
-
-        // Tạo đối tượng User
-        User user = User.builder()
-                .username(form.getUsername())
-                .email(form.getEmail())
-                .password(passwordEncoder.encode(form.getPassword()))
-                .role(role)
-                .otpCode(otpCode)
-                .status("INACTIVE") // Đặt trạng thái là "INACTIVE" cho đến khi xác thực email
-                .build();
-
-        // Lưu người dùng vào cơ sở dữ liệu
-        userRepository.save(user);
-        log.info("User {} registered", user.getEmail());
-
-//        String veryfyCode = UUID.randomUUID().toString();
-
-        // Gửi thông điệp đến Kafka để gửi email xác nhận
-        kafkaTemplate.send("confirm-account-topic", String.format("email=%s,id=%s,otpCode=%s", user.getEmail(), user.getId(), otpCode)); // Chỉnh sửa ở đây
-        return new ResponseData<>(200,"Success register new user. Please check your email for confirmation", "Id: " + user.getUserId());
+        return new ResponseData<>(200,"",null);
     }
 
 

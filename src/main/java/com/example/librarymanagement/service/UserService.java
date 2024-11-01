@@ -19,4 +19,6 @@ public interface UserService {
     ResponseData<String> delete(Long id);
     ResponseData<UserBasic> getMe(Principal principal);
     ResponseData<String> updateMe(Principal principal, UserForm form);
+
+    // KHOI PHUC TRANG THAI NGUOI DUNG-ADMIN ( STATUS )
 }
