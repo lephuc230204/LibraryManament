@@ -23,6 +23,9 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
+    @OneToOne
+    @JoinColumn( name = "cardlibrary_id")
+    private CardLibrary cardLibrary;
 
     private String username;
     @Column(unique = true)

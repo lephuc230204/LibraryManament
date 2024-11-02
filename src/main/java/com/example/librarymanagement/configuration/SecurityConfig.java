@@ -1,5 +1,6 @@
-package com.example.librarymanagement.security;
+package com.example.librarymanagement.configuration;
 
+import com.example.librarymanagement.security.JwtAuthenticationFilter;
 import com.example.librarymanagement.service.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -31,8 +32,7 @@ public class SecurityConfig {
                                 "/api/v1/auth/**"
                         ).permitAll()
                         .requestMatchers("/api/v1/admin/**").hasAnyAuthority("ROLE_ADMIN")
-
-
+                        .requestMatchers("/api/v1/librarian").hasAnyAuthority("ROLE_LIBRARIAN")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(userDetailsService)
@@ -43,8 +43,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
