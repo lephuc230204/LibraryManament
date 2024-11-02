@@ -21,6 +21,10 @@ public class BookReservation {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToOne
+    @JoinColumn(name ="book_id")
+    private Book book;
+
     @Enumerated(EnumType.STRING)
     private Status status;
 

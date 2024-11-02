@@ -16,8 +16,9 @@ public class BookForm {
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private String bookName;
     private Long quantity;
+    private Long currentQuantity;
     private Long categoryId;
-    private Long authorId;
+    private String authorName;
     private String publisher;
     @JsonFormat( shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate postingDate;

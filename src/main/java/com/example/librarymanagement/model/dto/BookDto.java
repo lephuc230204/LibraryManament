@@ -16,6 +16,7 @@ public class BookDto {
     private Long bookId;
     private String bookName;
     private Long quantity;
+    private Long currentQuantity;
     private String category;
     private String author;
     private String publisher;
@@ -23,7 +24,6 @@ public class BookDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate postingDate;
 
-    private Book.Status status;
     private Long crackId;
 
     public static BookDto toDto(Book book) {
@@ -31,11 +31,11 @@ public class BookDto {
                 .bookId(book.getBookId())
                 .bookName(book.getBookName())
                 .quantity(book.getQuantity())
+                .currentQuantity(book.getCurrentQuantity())
                 .category(book.getCategory().getCategoryName())
                 .author(book.getAuthor().getName())
                 .publisher(book.getPublisher())
                 .postingDate(book.getPostingDate())
-                .status(book.getStatus())
                 .crackId(book.getCrack().getId())
                 .build();
     }

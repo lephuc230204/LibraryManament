@@ -45,17 +45,19 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public ResponseData<Void> create(BookForm form) {
+    public ResponseData<BookDto> create(BookForm form) {
         log.info("Creating book");
 
-        // Tạo đối tượng Book mới và gán giá trị từ form
+        // Create a new Book and set values from form
         Book newBook = new Book();
         newBook.setBookName(form.getBookName());
         newBook.setQuantity(form.getQuantity());
+        newBook.setCurrentQuantity(form.getQuantity());
         newBook.setPublisher(form.getPublisher());
         newBook.setPostingDate(form.getPostingDate());
 
-        // Tìm Category theo ID
+        // kiem tra co trung category name hay khong
+        // Find Category by ID
         Category category = categoryRepository.findById(form.getCategoryId()).orElse(null);
         if (category == null) {
             log.error("Category not found for ID: {}", form.getCategoryId());
@@ -63,15 +65,17 @@ public class BookServiceImpl implements BookService {
         }
         newBook.setCategory(category);
 
-        // Tìm Author theo ID
-        Author author = authorRepository.findById(form.getAuthorId()).orElse(null);
+        // Find or create Author by name
+        Author author = authorRepository.findByName(form.getAuthorName()).orElse(null);
         if (author == null) {
-            log.error("Author not found for ID: {}", form.getAuthorId());
-            return new ResponseError<>(404, "Author not found");
+            log.info("Creating new author: {}", form.getAuthorName());
+            author = new Author();
+            author.setName(form.getAuthorName());
+            authorRepository.save(author);
         }
         newBook.setAuthor(author);
 
-        // Tìm Crack theo ID
+        // Find Crack by ID
         Crack crack = crackRepository.findById(form.getCrackId()).orElse(null);
         if (crack == null) {
             log.error("Crack not found for ID: {}", form.getCrackId());
@@ -79,16 +83,85 @@ public class BookServiceImpl implements BookService {
         }
         newBook.setCrack(crack);
 
-        // Kiểm tra xem đã có sách nào với cùng crack_id chưa
+        // Check if a book with the same crack ID already exists
         if (bookRepository.existsByCrackId(crack.getId())) {
             log.error("Book with crack_id {} already exists", crack.getId());
             return new ResponseError<>(409, "Book with this crack_id already exists");
         }
 
-        // Lưu đối tượng Book vào cơ sở dữ liệu
+        // Save the Book object to the database
         bookRepository.save(newBook);
+        BookDto bookDto = BookDto.toDto(newBook);
         log.info("Book created successfully");
-        return new ResponseData<>(200, "Book created successfully", null);
+        return new ResponseData<>(200, "Book created successfully with ID: ",  bookDto);
     }
+
+
+    @Override
+    public ResponseData<Void> deleteBook ( Long bookId){
+        log.info("Retrieving delete book with ID= "+bookId);
+        // LAY SACH VOI ID
+        Book book = bookRepository.findById(bookId).orElse(null);
+        if (book == null) return new ResponseError<>(400,"Book not found");
+        // XOA SACH
+        bookRepository.delete(book);
+
+        log.info("Book deleted successfully");
+        return new ResponseData<>(200, "Book deleted successfully", null);
+    }
+
+    @Override
+    public ResponseData<Void> updateBook(BookForm form, Long bookId) {
+        log.info("Updating book with ID= " + bookId);
+
+        // Find the book by ID
+        Book book = bookRepository.findById(bookId).orElse(null);
+        if (book == null) {
+            log.error("Book not found with ID: {}", bookId);
+            return new ResponseError<>(400, "Book not found");
+        }
+
+        book.setBookName(form.getBookName());
+        book.setQuantity(form.getQuantity());
+        book.setPublisher(form.getPublisher());
+        book.setPostingDate(form.getPostingDate());
+
+        // Kiem tra tac giả , k có thì tạo
+        Author author = authorRepository.findByName(form.getAuthorName()).orElse(null);
+        if (author == null) {
+            log.info("Author not found, creating new author: {}", form.getAuthorName());
+            author = new Author();
+            author.setName(form.getAuthorName());
+            authorRepository.save(author); // Save new author to the repository
+        }
+        book.setAuthor(author);
+
+        // Kiểm tra danh mục, không có thì tạo
+        Category category = categoryRepository.findById(form.getCategoryId()).orElse(null);
+        if (category == null) {
+            log.error("Category not found for ID: {}", form.getCategoryId());
+            return new ResponseError<>(404, "Category not found");
+        }
+        book.setCategory(category);
+
+        // Kiểm tra vị trí sách
+        Crack crack = crackRepository.findById(form.getCrackId()).orElse(null);
+        if (crack == null) {
+            log.error("Crack not found for ID: {}", form.getCrackId());
+            return new ResponseError<>(404, "Crack not found");}
+
+        // vị trí đặt sách đã được đặt sách chưa
+        if (bookRepository.existsByCrackId(form.getCrackId())) {
+            log.error("Another book with crack_id {} already exists", crack.getId());
+            return new ResponseError<>(409, "Vị trí đặt sách này đã có sách khác");
+        }
+        book.setCrack(crack);
+
+        // Save the updated book to the repository
+        bookRepository.save(book);
+        log.info("Book updated successfully");
+        return new ResponseData<>(200, "Book updated successfully", null);
+    }
+
 
 }
