@@ -1,6 +1,7 @@
 package com.example.librarymanagement.controller;
 
 
+import com.example.librarymanagement.model.dto.UserDto;
 import com.example.librarymanagement.payload.request.OTPForm;
 import com.example.librarymanagement.payload.request.SignInForm;
 import com.example.librarymanagement.payload.request.SignUpForm;
@@ -29,7 +30,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity< ResponseData<String> > register(@RequestBody SignUpForm form){return ResponseEntity.ok(authService.register(form));}
+    public ResponseEntity<ResponseData<UserDto> > register(@RequestBody SignUpForm form){
+        return ResponseEntity.ok(authService.register(form));
+    }
 
     @GetMapping("/refresh")
 

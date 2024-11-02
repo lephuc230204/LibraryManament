@@ -32,8 +32,7 @@ public class SecurityConfig {
                                 "/api/v1/auth/**"
                         ).permitAll()
                         .requestMatchers("/api/v1/admin/**").hasAnyAuthority("ROLE_ADMIN")
-
-
+                        .requestMatchers("/api/v1/librarian").hasAnyAuthority("ROLE_LIBRARIAN")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(userDetailsService)
@@ -44,8 +43,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

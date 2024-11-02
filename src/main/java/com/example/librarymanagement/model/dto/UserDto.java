@@ -1,6 +1,7 @@
 package com.example.librarymanagement.model.dto;
 
 import com.example.librarymanagement.model.entity.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class UserDto {
     private String phone;
     private String roleName;
     private LocalDate createdDate;
+    @JsonFormat( pattern = "dd-MM-yyyy")
     private LocalDate dob;
     private String status;
 

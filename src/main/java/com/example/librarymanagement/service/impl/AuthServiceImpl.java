@@ -1,8 +1,8 @@
 package com.example.librarymanagement.service.impl;
 
-import com.example.librarymanagement.exception.EmailAlreadyExistsException;
 import com.example.librarymanagement.exception.InvalidRefreshTokenException;
 import com.example.librarymanagement.model.dto.AuthDto;
+import com.example.librarymanagement.model.dto.UserDto;
 import com.example.librarymanagement.model.entity.Role;
 import com.example.librarymanagement.model.entity.User;
 import com.example.librarymanagement.payload.request.SignInForm;
@@ -25,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -73,9 +72,31 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseData<String> register(SignUpForm form) {
+    public ResponseData<UserDto> register(SignUpForm form) {
+        log.info("User registration is in progress");
+        log.info("Checking email exist");
+        User oldUser = userRepository.findByEmail(form.getEmail()).orElse(null);
+        if (oldUser != null) {return new ResponseError<>(400,"User is exits");};
 
-        return new ResponseData<>(200,"",null);
+        log.info("Checking confirm password");
+        if ( !form.getConfirmPassword().equals(form.getPassword()) ){ return new ResponseError<>(400,"Passwords do not match");}
+
+        Role role = roleRepository.findByName(form.getRole()).orElse(null);
+        if (role == null ){return new ResponseError<>(400,"Role not found");}
+        User newUser = User.builder()
+                .username(form.getUsername())
+                .email(form.getEmail())
+                .phone(form.getPhone())
+                .dob(form.getDob())
+                .password(passwordEncoder.encode(form.getPassword()))
+                .role(role)
+                .createdDate(LocalDate.now())
+                .status("ACTIVE")
+                .build();
+
+        userRepository.save(newUser);
+        UserDto data = UserDto.to(newUser);
+        return new ResponseData<>(200,"",data);
     }
 
 
