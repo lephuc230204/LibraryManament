@@ -1,7 +1,6 @@
 package com.example.librarymanagement.init;
 
 import com.example.librarymanagement.model.entity.*;
-import com.example.librarymanagement.model.entity.Book.Status;
 import com.example.librarymanagement.repository.*;
 
 import jakarta.annotation.PostConstruct;
@@ -78,10 +77,10 @@ public class DataInitialization {
         Book book1 = new Book();
         book1.setBookName("Dune");
         book1.setQuantity(10L);
+        book1.setCurrentQuantity(15L);
         book1.setCategory(category1);
         book1.setPublisher("Penguin Random House");
         book1.setPostingDate(LocalDate.of(2021, 1, 1));
-        book1.setStatus(Book.Status.AVAILABLE);
         book1.setAuthor(author1);
         book1.setCrack(crack1);
         bookRepository.save(book1);
@@ -89,10 +88,10 @@ public class DataInitialization {
         Book book2 = new Book();
         book2.setBookName("The Hobbit");
         book2.setQuantity(5L);
+        book2.setCurrentQuantity(5L);
         book2.setCategory(category2);
         book2.setPublisher("HarperCollins");
         book2.setPostingDate(LocalDate.of(2022, 6, 10));
-        book2.setStatus(Book.Status.BORROWED);
         book2.setAuthor(author2);  // Gán tác giả J.R.R. Tolkien cho sách The Hobbit
         book2.setCrack(crack2);    // Gán vị trí crack2 cho sách The Hobbit
         bookRepository.save(book2);

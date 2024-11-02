@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface BookService {
     // THEM
-    ResponseData<Void> create(BookForm form);
+    ResponseData<BookDto> create(BookForm form);
     // XOA
-
+    ResponseData<Void> deleteBook(Long bookId);
     // UPDATE
-
+    ResponseData<Void> updateBook(BookForm form,Long bookId);
     // GET ALL
     ResponseData<List<BookDto>> getAll();
     //

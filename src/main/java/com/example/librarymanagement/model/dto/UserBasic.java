@@ -26,8 +26,6 @@ public class UserBasic {
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .phone(user.getPhone())
-                .address(user.getAddress().toString())
-                .profilePicture(user.getProfilePicture())
                 .createdDate(user.getCreatedDate())
                 .dob(user.getDob())
                 .build();

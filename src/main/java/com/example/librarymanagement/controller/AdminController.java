@@ -23,9 +23,18 @@ public class AdminController {
     }
 
     @PostMapping("/books/create")
-    public  ResponseEntity<ResponseData<Void>> create(@RequestBody BookForm form){
+    public  ResponseEntity<ResponseData<BookDto>> create(@RequestBody BookForm form){
         return ResponseEntity.ok(bookService.create(form));
     }
 
+    @DeleteMapping("/books/delete/{bookId}")
+    public  ResponseEntity<ResponseData<Void>> deleteBook(@PathVariable Long bookId){
+        return ResponseEntity.ok(bookService.deleteBook(bookId));
+    }
+
+    @PutMapping("/books/update/{bookId}")
+    public  ResponseEntity<ResponseData<Void>> updateBook(@RequestBody BookForm form, @PathVariable Long bookId){
+        return ResponseEntity.ok(bookService.updateBook(form,bookId));
+    }
 
 }

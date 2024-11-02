@@ -33,14 +33,9 @@ public class Book {
     @JsonFormat( shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private LocalDate postingDate;
     @Enumerated(EnumType.STRING)
-    private Status status;
 
     @OneToOne
     @JoinColumn(name = "crack_id")
     private Crack crack;
 
-    public enum Status {
-        AVAILABLE,   // Chưa được mượn
-        BORROWED    // Đã được mượn
-    }
 }
