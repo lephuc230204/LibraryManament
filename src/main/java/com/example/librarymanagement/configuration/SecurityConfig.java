@@ -1,5 +1,6 @@
-package com.example.librarymanagement.security;
+package com.example.librarymanagement.configuration;
 
+import com.example.librarymanagement.security.JwtAuthenticationFilter;
 import com.example.librarymanagement.service.impl.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
