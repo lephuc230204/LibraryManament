@@ -32,13 +32,6 @@ public class AdminController {
         return ResponseEntity.ok(bookService.create(form));
     }
 
-<<<<<<< HEAD
-    // book reservation
-    // Xem chi tiết đặt sách
-    @GetMapping("/book-reservations/detail/{id}")
-    public ResponseEntity<ResponseData<BookReservationDto>> getBookReservationById(@PathVariable Long id) {
-        return ResponseEntity.ok(bookReservationService.getBookReservationById(id));
-=======
     @DeleteMapping("/books/delete/{bookId}")
     public  ResponseEntity<ResponseData<Void>> deleteBook(@PathVariable Long bookId){
         return ResponseEntity.ok(bookService.deleteBook(bookId));
@@ -47,7 +40,13 @@ public class AdminController {
     @PutMapping("/books/update/{bookId}")
     public  ResponseEntity<ResponseData<Void>> updateBook(@RequestBody BookForm form, @PathVariable Long bookId){
         return ResponseEntity.ok(bookService.updateBook(form,bookId));
->>>>>>> master
+    }
+
+    // book reservation
+    // Xem chi tiết đặt sách
+    @GetMapping("/book-reservations/detail/{id}")
+    public ResponseEntity<ResponseData<BookReservationDto>> getBookReservationById(@PathVariable Long id) {
+        return ResponseEntity.ok(bookReservationService.getBookReservationById(id));
     }
 
     // Xóa đặt sách
