@@ -1,7 +1,6 @@
 package com.example.librarymanagement.service.impl;
 
 import com.example.librarymanagement.model.dto.BookLendingDto;
-import com.example.librarymanagement.model.dto.UserDto;
 import com.example.librarymanagement.model.entity.Book;
 import com.example.librarymanagement.model.entity.BookLending;
 import com.example.librarymanagement.model.entity.User;
@@ -14,8 +13,6 @@ import com.example.librarymanagement.repository.UserRepository;
 import com.example.librarymanagement.service.BookLendingService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -112,7 +109,7 @@ public class BookLendingImpl implements BookLendingService {
     public ResponseData<List<BookLendingDto>> getMyBookLending(Principal principal) {
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with email: "));
-        List<BookLendingDto> listMyBookLending = bookLendingRepository.findByUsername(user.getUsername()).stream()
+        List<BookLendingDto> listMyBookLending = bookLendingRepository.findByUser(user).stream()
                 .map(BookLendingDto::toDto)
                 .collect(Collectors.toList());
         return new ResponseData<>(200, "Retrieved all users successfully", listMyBookLending);

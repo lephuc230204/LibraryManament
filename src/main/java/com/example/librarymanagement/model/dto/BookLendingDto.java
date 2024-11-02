@@ -13,24 +13,24 @@ import java.time.LocalDate;
 @Builder
 public class BookLendingDto {
     private Long lendingId;
-    private Book book;
+    private Long bookid;
     @JsonFormat( pattern = "dd-MM-yyyy")
     private LocalDate creationDate;
     @JsonFormat( pattern = "dd-MM-yyyy")
     private LocalDate dueDate;
     @JsonFormat( pattern = "dd-MM-yyyy")
     private LocalDate returnDate;
-    private User user;
-    private User staff;
+    private Long userid;
+    private Long staffid;
 
     public static BookLendingDto toDto(BookLending bookLending) {
         return BookLendingDto.builder()
                 .lendingId(bookLending.getLendingId())
-                .book(bookLending.getBook())
+                .bookid(bookLending.getBook().getBookId())
                 .creationDate(bookLending.getCreationDate())
                 .dueDate(bookLending.getDueDate())
-                .staff(bookLending.getStaff())
-                .user(bookLending.getUser())
+                .staffid(bookLending.getStaff().getId())
+                .userid(bookLending.getUser().getId())
                 .build();
     }
 }
