@@ -29,6 +29,7 @@ public class BookLendingDto {
                 .bookid(bookLending.getBook().getBookId())
                 .creationDate(bookLending.getCreationDate())
                 .dueDate(bookLending.getDueDate())
+                .returnDate(bookLending.getReturnDate())
                 .staffid(bookLending.getStaff().getId())
                 .userid(bookLending.getUser().getId())
                 .build();

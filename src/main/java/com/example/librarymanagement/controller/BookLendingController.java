@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -35,11 +36,6 @@ public class BookLendingController {
         return ResponseEntity.ok(bookLendingService.create(form, principal));
     }
 
-    @PutMapping("/renewal")
-    public ResponseEntity renewBookLending(Principal principal, @RequestBody LocalDate renewalDate, @RequestBody Long bookid) {
-        return ResponseEntity.ok(bookLendingService.bookRenewal(principal, renewalDate, bookid));
-    }
-
     @GetMapping("/getall")
     public ResponseEntity getAllBookLending() {
         return ResponseEntity.ok(bookLendingService.getAllBookLending());
@@ -48,5 +44,13 @@ public class BookLendingController {
     @GetMapping
     public ResponseEntity getBookLending(Principal principal){
         return  ResponseEntity.ok(bookLendingService.getMyBookLending(principal));
+    }
+
+    @PutMapping("/return-book")
+    public ResponseEntity<?> returnBookLending(@RequestBody Map<String, Object> requestBody) {
+        String username = (String) requestBody.get("username");
+        Long bookId = ((Number) requestBody.get("bookId")).longValue(); // Chuyển đổi từ Number sang Long
+
+        return ResponseEntity.ok(bookLendingService.returnBook(username, bookId));
     }
 }
