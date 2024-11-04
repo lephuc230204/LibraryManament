@@ -10,8 +10,7 @@ import java.util.Optional;
 public interface BookLendingRepository extends JpaRepository<BookLending, Long> {
     Optional<BookLending> findById(Long lendingId);
     List<BookLending> findByUser(User user);
-    // Phương thức kiểm tra xem có BookLending nào cho userId và returnDate là null hay không
-    boolean existsByUser_UserIdAndReturnDateIsNull(Long userId);
-
+    // Phương thức kiểm tra xem có BookLending nào cho userId, bookId và returnDate là null không
+    boolean existsByUser_UserIdAndBook_BookIdAndReturnDateIsNull(Long userId, Long bookId);
     BookLending findByUser_UserIdAndBook_BookId(Long userId, Long bookId);
 }

@@ -50,7 +50,7 @@ public class BookLendingImpl implements BookLendingService {
             return new ResponseError<>(404, "Book not found");
         }
 
-        boolean alreadyBorrowed = bookLendingRepository.existsByUser_UserIdAndReturnDateIsNull(User.get().getUserId());
+        boolean alreadyBorrowed = bookLendingRepository.existsByUser_UserIdAndBook_BookIdAndReturnDateIsNull(book.get().getBookId(), User.get().getUserId());
         if (alreadyBorrowed) {
             log.warn("User has already borrowed this book");
             return new ResponseError<>(400, "You have already borrowed this book");
