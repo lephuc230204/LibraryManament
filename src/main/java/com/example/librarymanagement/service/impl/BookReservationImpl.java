@@ -36,7 +36,7 @@ public class BookReservationImpl implements BookReservationService {
                 .orElse(null);
 
         if (user == null) {
-            log.error("User not found for ID: {}", bookReservationForm.getUserId());
+            log.error("User not found for email: {}", bookReservationForm.getEmail());
             return new ResponseError<>(404, "Logged in user not found");
         }
 

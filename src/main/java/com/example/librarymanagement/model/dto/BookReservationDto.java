@@ -1,6 +1,7 @@
 package com.example.librarymanagement.model.dto;
 
 import com.example.librarymanagement.model.entity.BookReservation;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,8 +11,9 @@ import java.time.LocalDate;
 @Builder
 public class BookReservationDto {
     private Long reservationId;
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate creationDate;
-    private Long userId;
+    private String email;
     private Long bookId;
     private BookReservation.Status status;
 
@@ -19,7 +21,7 @@ public class BookReservationDto {
         return BookReservationDto.builder()
                 .reservationId(bookReservation.getReservationId())
                 .bookId(bookReservation.getBook().getBookId())
-                .userId(bookReservation.getUser().getUserId())
+                .email(bookReservation.getUser().getEmail())
                 .status(bookReservation.getStatus())
                 .creationDate(LocalDate.now())
                 .build();

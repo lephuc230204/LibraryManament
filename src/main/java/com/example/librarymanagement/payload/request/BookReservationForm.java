@@ -9,7 +9,8 @@ import java.time.LocalDate;
 @Data
 @Builder
 public class BookReservationForm {
-    private Long userId;
+    // email
+    private String email;
     private Long bookId;
     private BookReservation.Status status;
     private LocalDate creationDate;
