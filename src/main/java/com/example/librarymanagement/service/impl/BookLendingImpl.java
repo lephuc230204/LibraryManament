@@ -113,6 +113,12 @@ public class BookLendingImpl implements BookLendingService {
             log.error("BookLending not found for ID: {}", bookid);
             return new ResponseError<>(404, "BookLending not found");
         }
+
+        Optional<Book> bookoptional = bookRepository.findById(bookid);
+        Book book = bookoptional.get();
+        book.setQuantity(book.getQuantity() + 1);
+        bookRepository.save(book);
+
         bookLending.setReturnDate(LocalDate.now());
         bookLendingRepository.save(bookLending);
         BookLendingDto data = BookLendingDto.toDto(bookLending);
