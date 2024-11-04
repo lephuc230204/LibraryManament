@@ -31,26 +31,8 @@ public class BookLendingController {
     @Autowired
     private final BookLendingService bookLendingService;
 
-    @PostMapping("/add")
-    public ResponseEntity createBookLending(@RequestBody BookLendingForm form, Principal principal) {
-        return ResponseEntity.ok(bookLendingService.create(form, principal));
-    }
-
-    @GetMapping("/getall")
-    public ResponseEntity getAllBookLending() {
-        return ResponseEntity.ok(bookLendingService.getAllBookLending());
-    }
-
     @GetMapping
-    public ResponseEntity getBookLending(Principal principal){
+    public ResponseEntity getMyBookLending(Principal principal){
         return  ResponseEntity.ok(bookLendingService.getMyBookLending(principal));
-    }
-
-    @PutMapping("/return-book")
-    public ResponseEntity<?> returnBookLending(@RequestBody Map<String, Object> requestBody) {
-        String username = (String) requestBody.get("username");
-        Long bookId = ((Number) requestBody.get("bookId")).longValue(); // Chuyển đổi từ Number sang Long
-
-        return ResponseEntity.ok(bookLendingService.returnBook(username, bookId));
     }
 }

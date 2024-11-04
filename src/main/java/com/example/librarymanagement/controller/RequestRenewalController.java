@@ -22,10 +22,6 @@ import java.security.Principal;
 public class RequestRenewalController {
     private final RequestRenewalService requestRenewalService;
 
-    @PutMapping("/renewal/{requestRenewalId}/{status}")
-    public ResponseEntity bookRenewal(@PathVariable Long requestRenewalId, @PathVariable Long status) {
-        return ResponseEntity.ok(requestRenewalService.bookRenewal(requestRenewalId, status));
-    }
 
     @PostMapping("/creat")
     public ResponseEntity creat(Principal principal,@RequestBody RequestRenewalForm form) {
