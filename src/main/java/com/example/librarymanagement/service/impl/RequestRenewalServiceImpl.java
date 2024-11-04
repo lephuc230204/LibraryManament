@@ -3,14 +3,12 @@ package com.example.librarymanagement.service.impl;
 import com.example.librarymanagement.model.dto.BookLendingDto;
 import com.example.librarymanagement.model.dto.BookReservationDto;
 import com.example.librarymanagement.model.dto.RequestRenewalDto;
-import com.example.librarymanagement.model.entity.BookLending;
-import com.example.librarymanagement.model.entity.BookReservation;
-import com.example.librarymanagement.model.entity.RequestRenewal;
-import com.example.librarymanagement.model.entity.User;
+import com.example.librarymanagement.model.entity.*;
 import com.example.librarymanagement.payload.request.RequestRenewalForm;
 import com.example.librarymanagement.payload.response.ResponseData;
 import com.example.librarymanagement.payload.response.ResponseError;
 import com.example.librarymanagement.repository.BookLendingRepository;
+import com.example.librarymanagement.repository.BookRepository;
 import com.example.librarymanagement.repository.RequestRenewalRepository;
 import com.example.librarymanagement.repository.UserRepository;
 import com.example.librarymanagement.service.BookLendingService;
@@ -34,6 +32,7 @@ public class RequestRenewalServiceImpl implements RequestRenewalService {
     private final RequestRenewalRepository requestRenewalRepository;
     private final UserRepository userRepository;
     private final BookLendingService bookLendingService;
+    private final BookRepository bookRepository;
 
     @Override
     public ResponseData<RequestRenewalDto> creat(Principal principal,RequestRenewalForm form) {
@@ -119,7 +118,9 @@ public class RequestRenewalServiceImpl implements RequestRenewalService {
         bookRenewal.setDueDate(requestRenewal.getRenewalDate());
         bookLendingRepository.save(bookRenewal);
 
-
+        Book Book = bookRenewal.getBook();
+        Book.setQuantity(Book.getQuantity() - 1);
+        bookRepository.save(Book);
 
         log.info("BookLending updated successfully");
         return new ResponseData<>(200, " update successfully");
