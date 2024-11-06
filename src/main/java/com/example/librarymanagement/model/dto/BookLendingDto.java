@@ -13,7 +13,9 @@ import java.time.LocalDate;
 @Builder
 public class BookLendingDto {
     private Long lendingId;
-    private Long bookid;
+    private Long bookId;
+    private String bookName;
+    private String author;
     @JsonFormat( pattern = "dd-MM-yyyy")
     private LocalDate creationDate;
     @JsonFormat( pattern = "dd-MM-yyyy")
@@ -26,7 +28,9 @@ public class BookLendingDto {
     public static BookLendingDto toDto(BookLending bookLending) {
         return BookLendingDto.builder()
                 .lendingId(bookLending.getLendingId())
-                .bookid(bookLending.getBook().getBookId())
+                .bookId(bookLending.getBook().getBookId())
+                .bookName(bookLending.getBook().getBookName())
+                .author(bookLending.getBook().getAuthor().getName())
                 .creationDate(bookLending.getCreationDate())
                 .dueDate(bookLending.getDueDate())
                 .returnDate(bookLending.getReturnDate())

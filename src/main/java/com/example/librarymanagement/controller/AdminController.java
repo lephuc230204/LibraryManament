@@ -100,10 +100,13 @@ public class AdminController {
     }
 
     // tra loi yeu cau gia haạn
-    @PutMapping("/book-renewal/renewal/{requestRenewalId}/{status}")
-    public ResponseEntity bookRenewal(@PathVariable Long requestRenewalId, @PathVariable Long status) {
-        return ResponseEntity.ok(requestRenewalService.bookRenewal(requestRenewalId, status));
+    @PutMapping("/book-renewal/reply")
+    public ResponseEntity<?> reply(@RequestBody Map<String, Object> requestBody) {
+        String reply = (String) requestBody.get("reply");
+        Long requestRenewalId = ((Number) requestBody.get("requestRenewalId")).longValue(); // Chuyển đổi từ Number sang Long
+        return ResponseEntity.ok(requestRenewalService.reply(requestRenewalId, reply));
     }
+
      // lay tat ca yeu cau gia han
     @GetMapping("/book-renewal/getall")
     public ResponseEntity getAllRequestRenewal() {

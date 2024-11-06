@@ -31,7 +31,7 @@ public class BookLendingController {
     @Autowired
     private final BookLendingService bookLendingService;
 
-    @GetMapping
+    @GetMapping("/getme")
     public ResponseEntity getMyBookLending(Principal principal){
         return  ResponseEntity.ok(bookLendingService.getMyBookLending(principal));
     }
