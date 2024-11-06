@@ -2,14 +2,10 @@ package com.example.librarymanagement.controller;
 
 import com.example.librarymanagement.model.dto.BookDto;
 import com.example.librarymanagement.model.dto.BookReservationDto;
-import com.example.librarymanagement.payload.request.BookForm;
-import com.example.librarymanagement.payload.request.BookLendingForm;
-import com.example.librarymanagement.payload.request.BookReservationForm;
+import com.example.librarymanagement.model.dto.UserDto;
+import com.example.librarymanagement.payload.request.*;
 import com.example.librarymanagement.payload.response.ResponseData;
-import com.example.librarymanagement.service.BookLendingService;
-import com.example.librarymanagement.service.BookReservationService;
-import com.example.librarymanagement.service.BookService;
-import com.example.librarymanagement.service.RequestRenewalService;
+import com.example.librarymanagement.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +20,8 @@ public class AdminController {
 
     @Autowired
     private BookService bookService;
+    @Autowired
+    private UserService userService;
     @Autowired
     private BookReservationService bookReservationService;
     @Autowired
@@ -109,4 +107,39 @@ public class AdminController {
     public ResponseEntity getAllRequestRenewal() {
         return ResponseEntity.ok(requestRenewalService.getAllRequestRenewal());
     }
+
+    @GetMapping ("/users")
+    public ResponseEntity<ResponseData<List<UserDto>>> gelAllUser(){
+        return ResponseEntity.ok(userService.getAll());
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<ResponseData<UserDto>> getUserById(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.getById(userId));
+    }
+
+    @PutMapping("/users/update/{userId}")
+    public ResponseEntity<ResponseData<String>> UpdateUser(@PathVariable Long userId, @RequestBody UserForm form){
+        return ResponseEntity.ok(userService.update(userId, form));
+    }
+
+    @DeleteMapping("/users/delete/{userId}")
+    public ResponseEntity<ResponseData<String>> deleteUser(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.delete(userId));
+    }
+    // chua xong
+    @GetMapping("/users/search/")
+    public ResponseEntity<ResponseData<List<UserDto>>> searchUser(String query){
+        return ResponseEntity.ok(userService.searchUser(query));
+    }
+
+    @PatchMapping("/users/restore/{userId}")
+    public ResponseEntity<ResponseData<Void>> restoreUser(@PathVariable Long userId, @RequestBody StatusUserForm form){
+        return ResponseEntity.ok(userService.restoreUser(userId, form));
+    }
+
+
+
+
+
 }

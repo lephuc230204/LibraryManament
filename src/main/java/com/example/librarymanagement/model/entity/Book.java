@@ -17,6 +17,7 @@ public class Book {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long bookId;
+    private String image;
     private String bookName;
     private Long quantity;
     private Long currentQuantity;

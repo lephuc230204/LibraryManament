@@ -50,6 +50,7 @@ public class BookServiceImpl implements BookService {
 
         // Create a new Book and set values from form
         Book newBook = new Book();
+        newBook.setImage(form.getImage());
         newBook.setBookName(form.getBookName());
         newBook.setQuantity(form.getQuantity());
         newBook.setCurrentQuantity(form.getQuantity());
@@ -57,22 +58,12 @@ public class BookServiceImpl implements BookService {
         newBook.setPostingDate(form.getPostingDate());
 
         // kiem tra co trung category name hay khong
-        // Find Category by ID
-        Category category = categoryRepository.findById(form.getCategoryId()).orElse(null);
-        if (category == null) {
-            log.error("Category not found for ID: {}", form.getCategoryId());
-            return new ResponseError<>(404, "Category not found");
-        }
+        // Find Category by Name
+        Category category = checkOrCreateCategory(form.getCategoryName());
         newBook.setCategory(category);
 
         // Find or create Author by name
-        Author author = authorRepository.findByName(form.getAuthorName()).orElse(null);
-        if (author == null) {
-            log.info("Creating new author: {}", form.getAuthorName());
-            author = new Author();
-            author.setName(form.getAuthorName());
-            authorRepository.save(author);
-        }
+        Author author = checkOrCreateAuthor(form.getAuthorName());
         newBook.setAuthor(author);
 
         // Find Crack by ID
@@ -81,13 +72,13 @@ public class BookServiceImpl implements BookService {
             log.error("Crack not found for ID: {}", form.getCrackId());
             return new ResponseError<>(404, "Crack not found");
         }
-        newBook.setCrack(crack);
-
         // Check if a book with the same crack ID already exists
         if (bookRepository.existsByCrackId(crack.getId())) {
             log.error("Book with crack_id {} already exists", crack.getId());
             return new ResponseError<>(409, "Book with this crack_id already exists");
         }
+        newBook.setCrack(crack);
+
 
         // Save the Book object to the database
         bookRepository.save(newBook);
@@ -98,7 +89,7 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public ResponseData<Void> deleteBook ( Long bookId){
+    public ResponseData<Void> deleteBook (Long bookId){
         log.info("Retrieving delete book with ID= "+bookId);
         // LAY SACH VOI ID
         Book book = bookRepository.findById(bookId).orElse(null);
@@ -121,27 +112,19 @@ public class BookServiceImpl implements BookService {
             return new ResponseError<>(400, "Book not found");
         }
 
+        book.setImage(form.getImage());
         book.setBookName(form.getBookName());
         book.setQuantity(form.getQuantity());
+        book.setCurrentQuantity(form.getCurrentQuantity());
         book.setPublisher(form.getPublisher());
         book.setPostingDate(form.getPostingDate());
 
         // Kiem tra tac giả , k có thì tạo
-        Author author = authorRepository.findByName(form.getAuthorName()).orElse(null);
-        if (author == null) {
-            log.info("Author not found, creating new author: {}", form.getAuthorName());
-            author = new Author();
-            author.setName(form.getAuthorName());
-            authorRepository.save(author); // Save new author to the repository
-        }
+        Author author = checkOrCreateAuthor(form.getAuthorName());
         book.setAuthor(author);
 
         // Kiểm tra danh mục, không có thì tạo
-        Category category = categoryRepository.findById(form.getCategoryId()).orElse(null);
-        if (category == null) {
-            log.error("Category not found for ID: {}", form.getCategoryId());
-            return new ResponseError<>(404, "Category not found");
-        }
+        Category category = checkOrCreateCategory(form.getCategoryName());
         book.setCategory(category);
 
         // Kiểm tra vị trí sách
@@ -163,5 +146,27 @@ public class BookServiceImpl implements BookService {
         return new ResponseData<>(200, "Book updated successfully", null);
     }
 
+    @Override
+    public Author checkOrCreateAuthor(String authorName){
+        Author author = authorRepository.findByName(authorName).orElse(null);
+        if( author == null){
+            author = new Author();
+            author.setName(authorName);
+            authorRepository.save(author);
+
+        }
+        return author;
+    }
+
+    @Override
+    public  Category checkOrCreateCategory(String categoryName){
+        Category category = categoryRepository.findByCategoryName(categoryName).orElse(null);
+        if(category == null){
+            category = new Category();
+            category.setCategoryName(categoryName);
+            categoryRepository.save(category);
+        }
+        return category;
+    }
 
 }

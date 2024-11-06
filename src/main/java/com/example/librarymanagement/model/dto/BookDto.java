@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Builder
 public class BookDto {
     private Long bookId;
+    private String image;
     private String bookName;
     private Long quantity;
     private Long currentQuantity;
@@ -29,6 +30,7 @@ public class BookDto {
     public static BookDto toDto(Book book) {
         return BookDto.builder()
                 .bookId(book.getBookId())
+                .image(book.getImage())
                 .bookName(book.getBookName())
                 .quantity(book.getQuantity())
                 .currentQuantity(book.getCurrentQuantity())

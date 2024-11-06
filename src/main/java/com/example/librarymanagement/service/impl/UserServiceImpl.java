@@ -4,6 +4,7 @@ import com.example.librarymanagement.model.dto.UserBasic;
 import com.example.librarymanagement.model.dto.UserDto;
 import com.example.librarymanagement.model.entity.User;
 import com.example.librarymanagement.payload.request.ChangePasswordForm;
+import com.example.librarymanagement.payload.request.StatusUserForm;
 import com.example.librarymanagement.payload.request.UserForm;
 import com.example.librarymanagement.payload.response.ResponseData;
 import com.example.librarymanagement.payload.response.ResponseError;
@@ -111,5 +112,18 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         UserDto userDto = UserDto.to(user); // Sử dụng UserDto.to(user)
         return new ResponseData<>(200, "User retrieved successfully", userDto);
+    }
+
+    @Override
+    public ResponseData<Void> restoreUser(Long userId, StatusUserForm form){
+        User user = userRepository.findById(userId).orElse(null);
+        if(user == null){
+            return new ResponseError<> (400, "User not found");
+        }
+
+        user.setStatus(form.getStatus());
+        userRepository.save(user);
+        return new ResponseData<>(200,"Change status user succesfully", null);
+
     }
 }
