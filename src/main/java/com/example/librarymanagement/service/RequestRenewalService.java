@@ -14,5 +14,5 @@ public interface RequestRenewalService {
     ResponseData<RequestRenewalDto> creat(Principal principal, RequestRenewalForm form);
     ResponseData<List<RequestRenewalDto>> getAllRequestRenewal();
     ResponseData<List<RequestRenewalDto>> getMyRequestRenewal(Principal principal);
-    ResponseData<BookLendingDto> bookRenewal(Long requestRenewalId,Long status);
+    ResponseData<BookLendingDto> reply(Long requestRenewalId, String reply);
 }

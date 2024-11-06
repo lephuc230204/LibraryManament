@@ -95,7 +95,7 @@ public class RequestRenewalServiceImpl implements RequestRenewalService {
 
     }
     @Override
-    public ResponseData<BookLendingDto> bookRenewal(Long requestRenewalId,Long status) {
+    public ResponseData<BookLendingDto> reply(Long requestRenewalId,String reply) {
         log.info(" employee reply request bookRenewal  ");
 
         Optional<RequestRenewal> requestRenewalOptional = requestRenewalRepository.findById(requestRenewalId);
@@ -104,7 +104,7 @@ public class RequestRenewalServiceImpl implements RequestRenewalService {
             return new ResponseError<>(404, "RequestRenewal not found");
         }
         RequestRenewal requestRenewal = requestRenewalOptional.get();
-        if (status == 1) {
+        if ("APPROVED".equals(reply)) {
             requestRenewal.setStatus(RequestRenewal.RequestRenewalStatus.APPROVED);
             log.info("bookRenewal status changed to APPROVED");
         } else {
@@ -119,7 +119,7 @@ public class RequestRenewalServiceImpl implements RequestRenewalService {
         bookLendingRepository.save(bookRenewal);
 
         Book Book = bookRenewal.getBook();
-        Book.setQuantity(Book.getQuantity() - 1);
+        Book.setCurrentQuantity(Book.getCurrentQuantity() - 1);
         bookRepository.save(Book);
 
         log.info("BookLending updated successfully");
