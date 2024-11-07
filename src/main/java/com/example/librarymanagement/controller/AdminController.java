@@ -6,9 +6,11 @@ import com.example.librarymanagement.model.dto.UserDto;
 import com.example.librarymanagement.payload.request.*;
 import com.example.librarymanagement.payload.response.ResponseData;
 import com.example.librarymanagement.service.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.List;
@@ -35,9 +37,11 @@ public class AdminController {
     }
 
     @PostMapping("/books/create")
-    public  ResponseEntity<ResponseData<BookDto>> create(@RequestBody BookForm form){
-        return ResponseEntity.ok(bookService.create(form));
+    public ResponseEntity<ResponseData<BookDto>> create(@Valid @ModelAttribute BookForm form) {
+        return ResponseEntity.ok(bookService.create(form));  // Truyền file đúng cách vào service
     }
+
+
 
     @DeleteMapping("/books/delete/{bookId}")
     public  ResponseEntity<ResponseData<Void>> deleteBook(@PathVariable Long bookId){

@@ -11,12 +11,18 @@ import com.example.librarymanagement.payload.response.ResponseError;
 import com.example.librarymanagement.repository.AuthorRepository;
 import com.example.librarymanagement.repository.BookRepository;
 import com.example.librarymanagement.repository.CategoryRepository;
-import com.example.librarymanagement.repository.CrackRepository; // Chắc chắn rằng bạn có repository này
+import com.example.librarymanagement.repository.CrackRepository;
 import com.example.librarymanagement.service.BookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +36,7 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private AuthorRepository authorRepository;
     @Autowired
-    private CrackRepository crackRepository; // Đúng repository cho Crack
+    private CrackRepository crackRepository;
 
     @Override
     public ResponseData<List<BookDto>> getAll() {
@@ -48,52 +54,82 @@ public class BookServiceImpl implements BookService {
     public ResponseData<BookDto> create(BookForm form) {
         log.info("Creating book");
 
-        // Create a new Book and set values from form
+        // Tạo đối tượng Book mới và gán giá trị từ form
         Book newBook = new Book();
-        newBook.setImage(form.getImage());
         newBook.setBookName(form.getBookName());
         newBook.setQuantity(form.getQuantity());
         newBook.setCurrentQuantity(form.getQuantity());
         newBook.setPublisher(form.getPublisher());
-        newBook.setPostingDate(form.getPostingDate());
+        newBook.setPostingDate(LocalDate.now());
 
-        // kiem tra co trung category name hay khong
-        // Find Category by Name
+        // Kiểm tra và tạo Category nếu chưa có
         Category category = checkOrCreateCategory(form.getCategoryName());
         newBook.setCategory(category);
 
-        // Find or create Author by name
+        // Kiểm tra và tạo Author nếu chưa có
         Author author = checkOrCreateAuthor(form.getAuthorName());
         newBook.setAuthor(author);
 
-        // Find Crack by ID
+        // Kiểm tra Crack theo ID
         Crack crack = crackRepository.findById(form.getCrackId()).orElse(null);
         if (crack == null) {
             log.error("Crack not found for ID: {}", form.getCrackId());
             return new ResponseError<>(404, "Crack not found");
         }
-        // Check if a book with the same crack ID already exists
+
+        // Kiểm tra nếu sách đã tồn tại với Crack ID này
         if (bookRepository.existsByCrackId(crack.getId())) {
             log.error("Book with crack_id {} already exists", crack.getId());
             return new ResponseError<>(409, "Book with this crack_id already exists");
         }
         newBook.setCrack(crack);
 
+        // Xử lý upload ảnh
+        if (form.getImage() != null && !form.getImage().isEmpty()) {
+            log.info("Image received: {}", form.getImage().getOriginalFilename());
+            try {
+                // Xác định đường dẫn lưu file, sử dụng đường dẫn tuyệt đối từ thư mục gốc của dự án
+                String uploadDir = System.getProperty("user.dir") + "/public/uploads";
+                Path uploadPath = Paths.get(uploadDir);
 
-        // Save the Book object to the database
+                // Kiểm tra và tạo thư mục nếu chưa có
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);  // Tạo thư mục nếu chưa có
+                    log.info("Directory created: {}", uploadDir);
+                }
+
+                // Đặt tên file theo tên sách hoặc tên gốc của file
+                String fileName = newBook.getBookName() + "_" + form.getImage().getOriginalFilename();
+                Path filePath = uploadPath.resolve(fileName);
+                log.info("Saving image with filename: {}", fileName);
+
+                // Lưu file vào thư mục
+                form.getImage().transferTo(filePath.toFile());
+                log.info("Image saved at path: {}", filePath.toString());
+
+                // Chuyển đường dẫn file thành String và lưu vào Book entity
+                newBook.setImage(filePath.toString());
+            } catch (IOException e) {
+                log.error("Failed to upload image: {}", e.getMessage());
+                return new ResponseError<>(500, "Failed to upload image");
+            }
+        } else {
+            log.warn("No image provided in the form.");
+        }
+
+        // Lưu Book vào cơ sở dữ liệu
         bookRepository.save(newBook);
         BookDto bookDto = BookDto.toDto(newBook);
-        log.info("Book created successfully");
-        return new ResponseData<>(200, "Book created successfully with ID: ",  bookDto);
+        log.info("Book created successfully with ID: {}", newBook.getBookId());
+        return new ResponseData<>(200, "Book created successfully with ID: " + newBook.getBookId(), bookDto);
     }
 
-
     @Override
-    public ResponseData<Void> deleteBook (Long bookId){
-        log.info("Retrieving delete book with ID= "+bookId);
+    public ResponseData<Void> deleteBook(Long bookId) {
+        log.info("Retrieving delete book with ID= " + bookId);
         // LAY SACH VOI ID
         Book book = bookRepository.findById(bookId).orElse(null);
-        if (book == null) return new ResponseError<>(400,"Book not found");
+        if (book == null) return new ResponseError<>(400, "Book not found");
         // XOA SACH
         bookRepository.delete(book);
 
@@ -112,7 +148,6 @@ public class BookServiceImpl implements BookService {
             return new ResponseError<>(400, "Book not found");
         }
 
-        book.setImage(form.getImage());
         book.setBookName(form.getBookName());
         book.setQuantity(form.getQuantity());
         book.setCurrentQuantity(form.getCurrentQuantity());
@@ -131,7 +166,8 @@ public class BookServiceImpl implements BookService {
         Crack crack = crackRepository.findById(form.getCrackId()).orElse(null);
         if (crack == null) {
             log.error("Crack not found for ID: {}", form.getCrackId());
-            return new ResponseError<>(404, "Crack not found");}
+            return new ResponseError<>(404, "Crack not found");
+        }
 
         // vị trí đặt sách đã được đặt sách chưa
         if (bookRepository.existsByCrackId(form.getCrackId())) {
@@ -147,26 +183,24 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Author checkOrCreateAuthor(String authorName){
+    public Author checkOrCreateAuthor(String authorName) {
         Author author = authorRepository.findByName(authorName).orElse(null);
-        if( author == null){
+        if (author == null) {
             author = new Author();
             author.setName(authorName);
             authorRepository.save(author);
-
         }
         return author;
     }
 
     @Override
-    public  Category checkOrCreateCategory(String categoryName){
+    public Category checkOrCreateCategory(String categoryName) {
         Category category = categoryRepository.findByCategoryName(categoryName).orElse(null);
-        if(category == null){
+        if (category == null) {
             category = new Category();
             category.setCategoryName(categoryName);
             categoryRepository.save(category);
         }
         return category;
     }
-
 }
