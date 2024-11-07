@@ -31,7 +31,7 @@ public class BookLendingImpl implements BookLendingService {
     private final BookLendingRepository bookLendingRepository;
     private final UserRepository userRepository;
 
-    @Override
+    @Override// xet quan he lai bbook voi bklending
     public ResponseData<BookLendingDto> create(BookLendingForm form, Principal principal) {
 
         User Userstaff = userRepository.findByEmail(principal.getName())
@@ -44,30 +44,30 @@ public class BookLendingImpl implements BookLendingService {
             return new ResponseError<>(404, "User not found");
         }
 
-        Optional<Book> book  = bookRepository.findById(form.getBookid());
-        if (!book.isPresent()) {
+        Book book  = bookRepository.findById(form.getBookid()).orElse(null);
+        if (book == null) {
             log.error("book not found for ID: {}", form.getBookid());
             return new ResponseError<>(404, "Book not found");
         }
 
-        boolean alreadyBorrowed = bookLendingRepository.existsByUser_UserIdAndBook_BookIdAndReturnDateIsNull(book.get().getBookId(), User.get().getUserId());
+        boolean alreadyBorrowed = bookLendingRepository.existsByUser_UserIdAndBook_BookIdAndReturnDateIsNull(User.get().getUserId(), book.getBookId());
         if (alreadyBorrowed) {
             log.warn("User has already borrowed this book");
             return new ResponseError<>(400, "You have already borrowed this book");
         }
 
-        if (book.get().getQuantity() == 0){
+        if (book.getQuantity() == 0){
             log.error("Book is out off stock ");
             return new ResponseError<>(404, "Book is out off stock");
         }
-        Book Book = book.get();
-        Book.setQuantity(Book.getQuantity() - 1);
-        bookRepository.save(Book);
+
+        book.setCurrentQuantity(book.getCurrentQuantity() - 1);
+        bookRepository.save(book);
 
 
         // Tạo đối tượng BookLending mới
         BookLending newBookLending = new BookLending();
-        newBookLending.setBook(Book);
+        newBookLending.setBook(book);
         newBookLending.setCreationDate(LocalDate.now());
         newBookLending.setDueDate(form.getDueDate());
         newBookLending.setUser(User.get());
@@ -94,7 +94,7 @@ public class BookLendingImpl implements BookLendingService {
     public ResponseData<List<BookLendingDto>> getMyBookLending(Principal principal) {
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with email: "));
-        List<BookLendingDto> listMyBookLending = bookLendingRepository.findByUser(user).stream()
+        List<BookLendingDto> listMyBookLending = bookLendingRepository.findByUserAndReturnDateIsNull(user).stream()
                 .map(BookLendingDto::toDto)
                 .collect(Collectors.toList());
         return new ResponseData<>(200, "Retrieved all users successfully", listMyBookLending);
@@ -116,7 +116,7 @@ public class BookLendingImpl implements BookLendingService {
 
         Optional<Book> bookoptional = bookRepository.findById(bookid);
         Book book = bookoptional.get();
-        book.setQuantity(book.getQuantity() + 1);
+        book.setCurrentQuantity(book.getCurrentQuantity() + 1);
         bookRepository.save(book);
 
         bookLending.setReturnDate(LocalDate.now());
