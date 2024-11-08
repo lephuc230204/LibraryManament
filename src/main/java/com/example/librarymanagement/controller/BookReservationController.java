@@ -16,11 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookReservationController {
     private final BookReservationService bookReservationService;
-    // tạo đặt sách
-    @PostMapping("/create")
-    public ResponseEntity<ResponseData<BookReservationDto>> createBookReservation(@RequestBody BookReservationForm bookReservationForm, Principal principal){
-        return ResponseEntity.ok(bookReservationService.createBookReservation(bookReservationForm, principal));
-    };
+
     // lịch sử đặt sách
     @GetMapping("/history")
     public ResponseEntity<ResponseData<List<BookReservationDto>>> getBookReservationByUserId(Principal principal){
