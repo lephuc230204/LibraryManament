@@ -12,10 +12,9 @@ import java.util.List;
 public interface BookLendingService {
 
     ResponseData<BookLendingDto> create(BookLendingForm form, Principal principal);
-    ResponseData<BookLendingDto> bookRenewal(Principal principal, LocalDate renewalDate, Long bookid) ;
     ResponseData<List<BookLendingDto>> getAllBookLending();
     ResponseData<List<BookLendingDto>> getMyBookLending(Principal principal);
-
+    ResponseData<BookLendingDto> returnBook(String username,Long bookid);
 
 
 

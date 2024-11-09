@@ -40,7 +40,6 @@ public class User implements UserDetails {
     private com.example.librarymanagement.model.entity.Role role;
 
     private LocalDate createdDate;
-    private String otpCode;
     private LocalDate dob;
 
     @Column(nullable = false)

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -30,23 +31,8 @@ public class BookLendingController {
     @Autowired
     private final BookLendingService bookLendingService;
 
-    @PostMapping("/add")
-    public ResponseEntity createBookLending(@RequestBody BookLendingForm form, Principal principal) {
-        return ResponseEntity.ok(bookLendingService.create(form, principal));
-    }
-
-    @PutMapping("/renewal")
-    public ResponseEntity renewBookLending(Principal principal, @RequestBody LocalDate renewalDate, @RequestBody Long bookid) {
-        return ResponseEntity.ok(bookLendingService.bookRenewal(principal, renewalDate, bookid));
-    }
-
-    @GetMapping("/getall")
-    public ResponseEntity getAllBookLending() {
-        return ResponseEntity.ok(bookLendingService.getAllBookLending());
-    }
-
-    @GetMapping
-    public ResponseEntity getBookLending(Principal principal){
+    @GetMapping("/getme")
+    public ResponseEntity getMyBookLending(Principal principal){
         return  ResponseEntity.ok(bookLendingService.getMyBookLending(principal));
     }
 }

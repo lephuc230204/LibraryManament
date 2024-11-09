@@ -2,16 +2,19 @@ package com.example.librarymanagement.controller;
 
 import com.example.librarymanagement.model.dto.BookDto;
 import com.example.librarymanagement.model.dto.BookReservationDto;
-import com.example.librarymanagement.payload.request.BookForm;
-import com.example.librarymanagement.payload.request.BookReservationForm;
+import com.example.librarymanagement.model.dto.UserDto;
+import com.example.librarymanagement.payload.request.*;
 import com.example.librarymanagement.payload.response.ResponseData;
-import com.example.librarymanagement.service.BookReservationService;
-import com.example.librarymanagement.service.BookService;
+import com.example.librarymanagement.service.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/admin")
@@ -20,7 +23,13 @@ public class AdminController {
     @Autowired
     private BookService bookService;
     @Autowired
+    private UserService userService;
+    @Autowired
     private BookReservationService bookReservationService;
+    @Autowired
+    private BookLendingService bookLendingService;
+    @Autowired
+    private RequestRenewalService requestRenewalService;
 
     @GetMapping("/books")
     public ResponseEntity<ResponseData<List<BookDto>>> getAll(){
@@ -28,9 +37,11 @@ public class AdminController {
     }
 
     @PostMapping("/books/create")
-    public  ResponseEntity<ResponseData<BookDto>> create(@RequestBody BookForm form){
-        return ResponseEntity.ok(bookService.create(form));
+    public ResponseEntity<ResponseData<BookDto>> create(@Valid @ModelAttribute BookForm form) {
+        return ResponseEntity.ok(bookService.create(form));  // Truyền file đúng cách vào service
     }
+
+
 
     @DeleteMapping("/books/delete/{bookId}")
     public  ResponseEntity<ResponseData<Void>> deleteBook(@PathVariable Long bookId){
@@ -43,6 +54,11 @@ public class AdminController {
     }
 
     // book reservation
+    // tạo đặt sách
+    @PostMapping("/create")
+    public ResponseEntity<ResponseData<BookReservationDto>> createBookReservation(@RequestBody BookReservationForm bookReservationForm, Principal principal){
+        return ResponseEntity.ok(bookReservationService.createBookReservation(bookReservationForm, principal));
+    };
     // Xem chi tiết đặt sách
     @GetMapping("/book-reservations/detail/{id}")
     public ResponseEntity<ResponseData<BookReservationDto>> getBookReservationById(@PathVariable Long id) {
@@ -68,4 +84,75 @@ public class AdminController {
     public ResponseEntity<ResponseData<List<BookReservationDto>>> getAllBookReservations() {
         return ResponseEntity.ok(bookReservationService.getAllBookReservation());
     }
+
+    // tạo 1 mươn sách
+    @PostMapping("/book-lending/add")
+    public ResponseEntity createBookLending(@RequestBody BookLendingForm form, Principal principal) {
+        return ResponseEntity.ok(bookLendingService.create(form, principal));
+    }
+
+    // Lấy tất ca sách đã mươợn
+    @GetMapping("/book-lending/getall")
+    public ResponseEntity getAllBookLending() {
+        return ResponseEntity.ok(bookLendingService.getAllBookLending());
+    }
+
+    // nguoi dung tra sách
+    @PutMapping("/return-book")
+    public ResponseEntity<?> returnBookLending(@RequestBody Map<String, Object> requestBody) {
+        String username = (String) requestBody.get("username");
+        Long bookId = ((Number) requestBody.get("bookId")).longValue(); // Chuyển đổi từ Number sang Long
+
+        return ResponseEntity.ok(bookLendingService.returnBook(username, bookId));
+    }
+
+    // tra loi yeu cau gia haạn
+    @PutMapping("/book-renewal/reply")
+    public ResponseEntity<?> reply(@RequestBody Map<String, Object> requestBody) {
+        String reply = (String) requestBody.get("reply");
+        Long requestRenewalId = ((Number) requestBody.get("requestRenewalId")).longValue(); // Chuyển đổi từ Number sang Long
+        return ResponseEntity.ok(requestRenewalService.reply(requestRenewalId, reply));
+    }
+
+    // lay tat ca yeu cau gia han
+    @GetMapping("/book-renewal/getall")
+    public ResponseEntity getAllRequestRenewal() {
+        return ResponseEntity.ok(requestRenewalService.getAllRequestRenewal());
+    }
+
+    @GetMapping ("/users")
+    public ResponseEntity<ResponseData<List<UserDto>>> gelAllUser(){
+        return ResponseEntity.ok(userService.getAll());
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<ResponseData<UserDto>> getUserById(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.getById(userId));
+    }
+
+    @PutMapping("/users/update/{userId}")
+    public ResponseEntity<ResponseData<String>> UpdateUser(@PathVariable Long userId, @RequestBody UserForm form){
+        return ResponseEntity.ok(userService.update(userId, form));
+    }
+
+    @DeleteMapping("/users/delete/{userId}")
+    public ResponseEntity<ResponseData<String>> deleteUser(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.delete(userId));
+    }
+    // chua xong
+    @GetMapping("/users/search/")
+    public ResponseEntity<ResponseData<List<UserDto>>> searchUser(String query){
+        return ResponseEntity.ok(userService.searchUser(query));
+    }
+
+    @PatchMapping("/users/restore/{userId}")
+    public ResponseEntity<ResponseData<Void>> restoreUser(@PathVariable Long userId, @RequestBody StatusUserForm form){
+        return ResponseEntity.ok(userService.restoreUser(userId, form));
+    }
+
+    @PostMapping("/users/register")
+    public ResponseEntity<ResponseData<UserDto>> register(@RequestBody RegisterForm form){
+        return ResponseEntity.ok(userService.register(form));
+    }
+
 }

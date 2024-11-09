@@ -39,17 +39,6 @@ public class AuthController {
     public ResponseEntity refreshToken(@RequestHeader("X-Refresh-Token") String refreshToken){return ResponseEntity.ok(authService.refreshJWT(refreshToken));}
 
 
-    @GetMapping("/confirm/{userId}")
-    public ResponseData<String> confirm(@Min(1) @PathVariable Long userId, @RequestBody OTPForm otpForm) {
-        log.info("Confirm user, userId={}, otpCode={}", userId, otpForm.getOtpCode());
 
-        try {
-            authService.confirmUser(userId, otpForm.getOtpCode());
-            return new ResponseData<>(200, "User has confirmed successfully");
-        } catch (Exception e) {
-            log.error("errorMessage={}", e.getMessage(), e.getCause());
-            return new ResponseError(400, "Confirm was failed");
-        }
-    }
 
 }

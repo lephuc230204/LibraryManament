@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 @AllArgsConstructor
@@ -17,6 +18,7 @@ public class Book {
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     private Long bookId;
+    private String image;
     private String bookName;
     private Long quantity;
     private Long currentQuantity;

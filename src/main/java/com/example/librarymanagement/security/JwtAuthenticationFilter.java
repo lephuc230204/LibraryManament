@@ -30,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Nếu JWT không null và hợp lệ
         if (jwt != null && jwtTokenProvider.validateAccessToken(jwt)) {
+//            if( )
             Authentication auth = jwtTokenProvider.createAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(auth);
         }

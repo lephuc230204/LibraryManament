@@ -13,8 +13,6 @@ public interface AuthService {
     ResponseData<UserDto> register(SignUpForm form);
 
     AuthDto refreshJWT(String refreshToken);
-    String confirmUser(long userId, String otpCode);
-
 
     //
 }

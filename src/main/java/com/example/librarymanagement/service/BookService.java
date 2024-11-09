@@ -1,19 +1,32 @@
 package com.example.librarymanagement.service;
 
 import com.example.librarymanagement.model.dto.BookDto;
+import com.example.librarymanagement.model.entity.Author;
+import com.example.librarymanagement.model.entity.Category;
 import com.example.librarymanagement.payload.request.BookForm;
 import com.example.librarymanagement.payload.response.ResponseData;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface BookService {
-    // THEM
+    // THÊM SÁCH
     ResponseData<BookDto> create(BookForm form);
-    // XOA
+
+    // XÓA SÁCH
     ResponseData<Void> deleteBook(Long bookId);
-    // UPDATE
-    ResponseData<Void> updateBook(BookForm form,Long bookId);
-    // GET ALL
+
+    // CẬP NHẬT SÁCH
+    ResponseData<Void> updateBook(BookForm form, Long bookId);
+
+    // LẤY TẤT CẢ CÁC SÁCH
     ResponseData<List<BookDto>> getAll();
-    //
+
+    // KIỂM TRA HOẶC TẠO TÁC GIẢ
+    Author checkOrCreateAuthor(String authorName);
+
+    // KIỂM TRA HOẶC TẠO DANH MỤC
+    Category checkOrCreateCategory(String categoryName);
+
+    // TÌM KIẾM SÁCH
 }

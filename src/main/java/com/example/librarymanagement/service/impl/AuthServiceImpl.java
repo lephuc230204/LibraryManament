@@ -124,21 +124,6 @@ public class AuthServiceImpl implements AuthService {
         throw new InvalidRefreshTokenException(refreshToken);
     }
 
-    @Override
-    public String confirmUser(long userId, String otpCode) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        // Check if the OTP matches
-        if (!otpCode.equals(user.getOtpCode())) {
-            log.error("OTP does not match for userId={}", userId);
-            throw new IllegalArgumentException("OTP is incorrect");
-        }
-
-        user.setStatus("ACTIVE");
-        user.setCreatedDate(LocalDate.now());
-        userRepository.save(user);
-        return "Confirmed!";
-    }
 
 }

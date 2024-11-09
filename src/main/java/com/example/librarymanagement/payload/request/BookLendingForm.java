@@ -8,7 +8,6 @@ import lombok.Data;
 public class BookLendingForm {
     private Long bookid;
     private LocalDate dueDate;
-    private LocalDate returnDate;
-    private Long userid;
+    private String username;
     private User staff;
 }
