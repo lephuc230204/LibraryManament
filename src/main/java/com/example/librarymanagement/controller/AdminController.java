@@ -150,8 +150,9 @@ public class AdminController {
         return ResponseEntity.ok(userService.restoreUser(userId, form));
     }
 
-
-
-
+    @PostMapping("/users/register")
+    public ResponseEntity<ResponseData<UserDto>> register(@RequestBody RegisterForm form){
+        return ResponseEntity.ok(userService.register(form));
+    }
 
 }

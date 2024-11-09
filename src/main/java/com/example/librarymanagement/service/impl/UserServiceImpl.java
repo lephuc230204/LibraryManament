@@ -2,14 +2,18 @@ package com.example.librarymanagement.service.impl;
 
 import com.example.librarymanagement.model.dto.UserBasic;
 import com.example.librarymanagement.model.dto.UserDto;
+import com.example.librarymanagement.model.entity.Role;
 import com.example.librarymanagement.model.entity.User;
 import com.example.librarymanagement.payload.request.ChangePasswordForm;
+import com.example.librarymanagement.payload.request.RegisterForm;
 import com.example.librarymanagement.payload.request.StatusUserForm;
 import com.example.librarymanagement.payload.request.UserForm;
 import com.example.librarymanagement.payload.response.ResponseData;
 import com.example.librarymanagement.payload.response.ResponseError;
+import com.example.librarymanagement.repository.RoleRepository;
 import com.example.librarymanagement.repository.UserRepository;
 import com.example.librarymanagement.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +23,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -27,6 +32,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     public ResponseData<List<UserDto>> getAll() {
@@ -127,4 +134,32 @@ public class UserServiceImpl implements UserService {
         return new ResponseData<>(200,"Change status user succesfully", null);
 
     }
+
+    @Override
+    public ResponseData<UserDto> register(RegisterForm form){
+        log.info("Dang tao nguoi dung");
+        User existUser = userRepository.findByEmail(form.getEmail()).orElse(null);
+        if( existUser != null){return new ResponseError<>(400,"User has exist");}
+
+        if(!form.getPassword().equals(form.getConfirmPassword())){ return new ResponseError<>(400,"Password do not match");}
+
+        Role role = roleRepository.findByName(form.getRole()).orElse(null);
+        {if( existUser != null){return new ResponseError<>(400,"Role has exist");}}
+
+        User newUser = User.builder()
+                .username(form.getUsername())
+                .phone(form.getPhone())
+                .email(form.getEmail())
+                .password(passwordEncoder.encode(form.getPassword()))
+                .dob(form.getDob())
+                .status("ACTIVE")
+                .role(role)
+                .build();
+        userRepository.save(newUser);
+        UserDto data = UserDto.to(newUser);
+        log.info("Tao nguoi dung thanh cong");
+        return new ResponseData<>(200,"Create user successflly with ID: "+newUser.getUserId(),data);
+    }
+
+
 }
