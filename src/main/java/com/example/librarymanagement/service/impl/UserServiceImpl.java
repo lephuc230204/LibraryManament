@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
     public ResponseData<List<UserDto>> getAll() {
         List<UserDto> listUsers = userRepository.findAll().stream()
                 .map(UserDto::to)
+                .filter(user -> !user.getRoleName().equals("ROLE_ADMIN"))
                 .collect(Collectors.toList());
         return new ResponseData<>(200, "Retrieved all users successfully", listUsers);
     }
