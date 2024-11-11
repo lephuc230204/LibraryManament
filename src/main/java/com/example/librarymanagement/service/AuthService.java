@@ -5,6 +5,8 @@ import com.example.librarymanagement.model.dto.UserDto;
 import com.example.librarymanagement.payload.request.SignInForm;
 import com.example.librarymanagement.payload.request.SignUpForm;
 import com.example.librarymanagement.payload.response.ResponseData;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
 public interface AuthService {
@@ -13,6 +15,6 @@ public interface AuthService {
     ResponseData<UserDto> register(SignUpForm form);
 
     AuthDto refreshJWT(String refreshToken);
-
+    ResponseData<String> logout(HttpServletRequest request, HttpServletResponse response);
     //
 }

@@ -3,7 +3,6 @@ package com.example.librarymanagement.security;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-
 import com.example.librarymanagement.service.impl.UserDetailsServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
@@ -99,4 +99,10 @@ public class JwtTokenProvider {
                 userDetails.getAuthorities()
         );
     }
+
+    public Date getExpiryDateFromToken(String token) {
+        DecodedJWT jwt = JWT.decode(token);
+        return jwt.getExpiresAt(); // Lấy ngày hết hạn từ token
+    }
+
 }
