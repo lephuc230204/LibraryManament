@@ -24,7 +24,7 @@ public class RequestRenewalController {
 
 
     @PostMapping("/create")
-    public ResponseEntity creat(Principal principal,@RequestBody RequestRenewalForm form) {
+    public ResponseEntity create(Principal principal,@RequestBody RequestRenewalForm form) {
         return ResponseEntity.ok(requestRenewalService.creat(principal, form));
     }
 
