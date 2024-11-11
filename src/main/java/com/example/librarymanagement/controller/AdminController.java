@@ -115,7 +115,7 @@ public class AdminController {
     }
 
     // lay tat ca yeu cau gia han
-    @GetMapping("/book-renewal/getall")
+    @GetMapping("/book-renewal")
     public ResponseEntity getAllRequestRenewal() {
         return ResponseEntity.ok(requestRenewalService.getAllRequestRenewal());
     }
