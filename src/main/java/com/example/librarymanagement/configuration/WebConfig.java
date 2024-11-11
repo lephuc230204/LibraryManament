@@ -9,8 +9,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Đảm bảo rằng đường dẫn tài nguyên tĩnh là hợp lệ
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:///D:/LibraryManament/public/uploads/");
+                .addResourceLocations("file:///" + System.getProperty("user.dir") + "/public/uploads/");
     }
 }
