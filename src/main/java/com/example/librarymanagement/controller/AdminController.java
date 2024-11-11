@@ -41,7 +41,10 @@ public class AdminController {
         return ResponseEntity.ok(bookService.create(form));  // Truyền file đúng cách vào service
     }
 
-
+    @GetMapping("/books/{id}")
+    public ResponseEntity<ResponseData<BookDto>> getBookById(@PathVariable Long id) {
+        return  ResponseEntity.ok(bookService.getBookById(id));
+    }
 
     @DeleteMapping("/books/delete/{bookId}")
     public  ResponseEntity<ResponseData<Void>> deleteBook(@PathVariable Long bookId){
@@ -49,7 +52,7 @@ public class AdminController {
     }
 
     @PutMapping("/books/update/{bookId}")
-    public  ResponseEntity<ResponseData<Void>> updateBook(@RequestBody BookForm form, @PathVariable Long bookId){
+    public  ResponseEntity<ResponseData<Void>> updateBook(@Valid @ModelAttribute BookForm form, @PathVariable Long bookId){
         return ResponseEntity.ok(bookService.updateBook(form,bookId));
     }
 

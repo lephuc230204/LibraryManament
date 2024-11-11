@@ -13,6 +13,8 @@ public interface BookService {
     // THÊM SÁCH
     ResponseData<BookDto> create(BookForm form);
 
+    ResponseData<BookDto> getBookById(Long id);
+
     // XÓA SÁCH
     ResponseData<Void> deleteBook(Long bookId);
 

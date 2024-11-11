@@ -49,7 +49,15 @@ public class BookServiceImpl implements BookService {
         log.info("Get books successfully");
         return new ResponseData<>(200, "Get books successfully", books);
     }
-
+    @Override
+    public ResponseData<BookDto> getBookById(Long id) {
+        Book book = bookRepository.findById(id).orElse(null);
+        if (book == null) {
+            log.error("Book not found with ID: {}", id);
+            return new ResponseError<>(400, "Book not found");
+        }
+        return new ResponseData<>(200, "Get book successfully", BookDto.toDto(book));
+    }
     @Override
     public ResponseData<BookDto> create(BookForm form) {
         log.info("Creating book");
@@ -150,9 +158,9 @@ public class BookServiceImpl implements BookService {
 
         book.setBookName(form.getBookName());
         book.setQuantity(form.getQuantity());
-        book.setCurrentQuantity(form.getCurrentQuantity());
+        book.setCurrentQuantity(form.getQuantity());
         book.setPublisher(form.getPublisher());
-        book.setPostingDate(form.getPostingDate());
+        book.setPostingDate(LocalDate.now());
 
         // Kiem tra tac giả , k có thì tạo
         Author author = checkOrCreateAuthor(form.getAuthorName());
@@ -169,12 +177,45 @@ public class BookServiceImpl implements BookService {
             return new ResponseError<>(404, "Crack not found");
         }
 
-        // vị trí đặt sách đã được đặt sách chưa
-        if (bookRepository.existsByCrackId(form.getCrackId())) {
-            log.error("Another book with crack_id {} already exists", crack.getId());
+        // Chỉ kiểm tra vị trí nếu crack ID mới khác với crack ID hiện tại của sách
+        if ((book.getCrack() == null || book.getCrack().getId() != form.getCrackId()) && bookRepository.existsByCrackId(form.getCrackId())) {
+            log.error("Another book with crack_id {} already exists", form.getCrackId());
             return new ResponseError<>(409, "Vị trí đặt sách này đã có sách khác");
         }
+
         book.setCrack(crack);
+
+        if (form.getImage() != null && !form.getImage().isEmpty()) {
+            log.info("Image received: {}", form.getImage().getOriginalFilename());
+            try {
+                // Xác định đường dẫn lưu file, sử dụng đường dẫn tuyệt đối từ thư mục gốc của dự án
+                String uploadDir = System.getProperty("user.dir") + "/public/uploads";
+                Path uploadPath = Paths.get(uploadDir);
+
+                // Kiểm tra và tạo thư mục nếu chưa có
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);  // Tạo thư mục nếu chưa có
+                    log.info("Directory created: {}", uploadDir);
+                }
+
+                // Đặt tên file theo tên sách hoặc tên gốc của file
+                String fileName = book.getBookName() + "_" + form.getImage().getOriginalFilename();
+                Path filePath = uploadPath.resolve(fileName);
+                log.info("Saving image with filename: {}", fileName);
+
+                // Lưu file vào thư mục
+                form.getImage().transferTo(filePath.toFile());
+                log.info("Image saved at path: {}", filePath.toString());
+
+                // Chuyển đường dẫn file thành String và lưu vào Book entity
+                book.setImage(fileName);
+            } catch (IOException e) {
+                log.error("Failed to upload image: {}", e.getMessage());
+                return new ResponseError<>(500, "Failed to upload image");
+            }
+        } else {
+            log.warn("No image provided in the form.");
+        }
 
         // Save the updated book to the repository
         bookRepository.save(book);
