@@ -8,6 +8,8 @@ import com.example.librarymanagement.payload.request.SignUpForm;
 import com.example.librarymanagement.payload.response.ResponseData;
 import com.example.librarymanagement.payload.response.ResponseError;
 import com.example.librarymanagement.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +37,12 @@ public class AuthController {
     }
 
     @GetMapping("/refresh")
-
     public ResponseEntity refreshToken(@RequestHeader("X-Refresh-Token") String refreshToken){return ResponseEntity.ok(authService.refreshJWT(refreshToken));}
 
+    @PostMapping("/logout")
+    public ResponseEntity<ResponseData<String>> logout(HttpServletRequest request, HttpServletResponse response) {
+        return ResponseEntity.ok(authService.logout(request, response));
+    }
 
 
 

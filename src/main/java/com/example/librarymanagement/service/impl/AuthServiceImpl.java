@@ -15,6 +15,9 @@ import com.example.librarymanagement.repository.RoleRepository;
 import com.example.librarymanagement.repository.UserRepository;
 import com.example.librarymanagement.security.JwtTokenProvider;
 import com.example.librarymanagement.service.AuthService;
+import com.example.librarymanagement.service.BlacklistTokenService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -27,6 +30,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +46,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final CardLibraryRepository cardLibraryRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
+    private final BlacklistTokenService blacklistTokenService;
 
     @Override
     public AuthDto login(SignInForm form) {
@@ -114,9 +121,6 @@ public class AuthServiceImpl implements AuthService {
         return new ResponseData<>(200,"",data);
     }
 
-
-
-
     @Override
     public AuthDto refreshJWT(String refreshToken) {
         if (refreshToken != null) {
@@ -139,6 +143,34 @@ public class AuthServiceImpl implements AuthService {
         throw new InvalidRefreshTokenException(refreshToken);
     }
 
+    @Override
+    public ResponseData<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        // Lấy JWT từ header Authorization
+        String token = jwtTokenProvider.getJwtFromRequest(request);
+
+        // Kiểm tra xem token có hợp lệ không
+        if (token != null && jwtTokenProvider.validateAccessToken(token)) {
+            // Lấy ngày hết hạn từ token
+            Date expiryDateFromToken = jwtTokenProvider.getExpiryDateFromToken(token);
+
+            // Chuyển đổi từ java.util.Date sang java.time.LocalDateTime
+            LocalDateTime expiryDate = expiryDateFromToken.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+
+            // Lưu token vào danh sách đen
+            blacklistTokenService.addTokenToBlacklist(token, expiryDate); // thêm token vào danh sách đen
+
+            // Xóa cookie hoặc bất kỳ thông tin đăng nhập liên quan
+            response.setHeader("Set-Cookie", "JSESSIONID=; HttpOnly; Path=/; Max-Age=0; Secure; SameSite=Strict");
+
+            log.info("User logged out successfully with token: {}", token);
+            return new ResponseData<>(200, "Đăng xuất thành công", null);
+        }
+
+        log.error("Logout failed: Invalid or expired token for request: {}", request.getRequestURI());
+        return new ResponseError<>(400, "Token không hợp lệ hoặc đã hết hạn");
+    }
 
 
 }

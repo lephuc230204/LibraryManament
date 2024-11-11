@@ -108,7 +108,7 @@ public class BookServiceImpl implements BookService {
                 log.info("Image saved at path: {}", filePath.toString());
 
                 // Chuyển đường dẫn file thành String và lưu vào Book entity
-                newBook.setImage(filePath.toString());
+                newBook.setImage(fileName);
             } catch (IOException e) {
                 log.error("Failed to upload image: {}", e.getMessage());
                 return new ResponseError<>(500, "Failed to upload image");

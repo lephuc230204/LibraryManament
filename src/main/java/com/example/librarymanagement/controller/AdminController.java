@@ -97,7 +97,7 @@ public class AdminController {
         return ResponseEntity.ok(bookLendingService.getAllBookLending());
     }
 
-     // nguoi dung tra sách
+    // nguoi dung tra sách
     @PutMapping("/return-book")
     public ResponseEntity<?> returnBookLending(@RequestBody Map<String, Object> requestBody) {
         String username = (String) requestBody.get("username");
@@ -114,8 +114,8 @@ public class AdminController {
         return ResponseEntity.ok(requestRenewalService.reply(requestRenewalId, reply));
     }
 
-     // lay tat ca yeu cau gia han
-    @GetMapping("/book-renewal/getall")
+    // lay tat ca yeu cau gia han
+    @GetMapping("/book-renewal")
     public ResponseEntity getAllRequestRenewal() {
         return ResponseEntity.ok(requestRenewalService.getAllRequestRenewal());
     }

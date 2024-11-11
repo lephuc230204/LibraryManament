@@ -23,17 +23,17 @@ public class RequestRenewalController {
     private final RequestRenewalService requestRenewalService;
 
 
-    @PostMapping("/creat")
-    public ResponseEntity creat(Principal principal,@RequestBody RequestRenewalForm form) {
+    @PostMapping("/create")
+    public ResponseEntity create(Principal principal,@RequestBody RequestRenewalForm form) {
         return ResponseEntity.ok(requestRenewalService.creat(principal, form));
     }
 
-    @GetMapping("/getall")
+    @GetMapping("/")
     public ResponseEntity getAllRequestRenewal() {
         return ResponseEntity.ok(requestRenewalService.getAllRequestRenewal());
     }
 
-    @GetMapping("/getme")
+    @GetMapping("/me")
     public ResponseEntity getMyRequestRenewal(Principal principal) {
         return ResponseEntity.ok(requestRenewalService.getMyRequestRenewal(principal));
     }
