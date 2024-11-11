@@ -3,6 +3,7 @@ package com.example.librarymanagement.model.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Entity
+@Builder
 @Table( name = "card_library")
 public class CardLibrary {
     @Id
@@ -23,6 +25,8 @@ public class CardLibrary {
     private User user;
     @JsonFormat( pattern = "dd-MM-yyyy")
     private LocalDate issued;
+    @JsonFormat( pattern = "dd-MM-yyyy")
+    private LocalDate expired;
     @Enumerated(EnumType.STRING)
     private Status status;
     public enum Status{

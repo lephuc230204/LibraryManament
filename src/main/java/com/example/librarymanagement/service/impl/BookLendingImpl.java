@@ -31,7 +31,7 @@ public class BookLendingImpl implements BookLendingService {
     private final BookLendingRepository bookLendingRepository;
     private final UserRepository userRepository;
 
-    @Override// xet quan he lai bbook voi bklending
+    @Override
     public ResponseData<BookLendingDto> create(BookLendingForm form, Principal principal) {
 
         User Userstaff = userRepository.findByEmail(principal.getName())
@@ -42,6 +42,10 @@ public class BookLendingImpl implements BookLendingService {
         if (User == null) {
             log.error("Author not found for ID: {}", form.getUsername());
             return new ResponseError<>(404, "User not found");
+        }
+        if (User.get().getCardLibrary().getExpired().isBefore(LocalDate.now())){
+            log.error("Book expired");
+            return new ResponseError<>(404, "Book expired");
         }
 
         Book book  = bookRepository.findById(form.getBookid()).orElse(null);
@@ -64,8 +68,6 @@ public class BookLendingImpl implements BookLendingService {
         book.setCurrentQuantity(book.getCurrentQuantity() - 1);
         bookRepository.save(book);
 
-
-        // Tạo đối tượng BookLending mới
         BookLending newBookLending = new BookLending();
         newBookLending.setBook(book);
         newBookLending.setCreationDate(LocalDate.now());
@@ -108,7 +110,7 @@ public class BookLendingImpl implements BookLendingService {
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with email: "));
 
-        BookLending bookLending  = bookLendingRepository.findByUser_UserIdAndBook_BookId(user.getUserId(), bookid);
+        BookLending bookLending  = bookLendingRepository.findByUser_UserIdAndBook_BookIdAndReturnDateIsNull(user.getUserId(), bookid);
         if(bookLending == null){
             log.error("BookLending not found for ID: {}", bookid);
             return new ResponseError<>(404, "BookLending not found");

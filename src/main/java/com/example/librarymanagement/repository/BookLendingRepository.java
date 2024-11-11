@@ -12,5 +12,5 @@ public interface BookLendingRepository extends JpaRepository<BookLending, Long> 
     List<BookLending> findByUserAndReturnDateIsNull(User user);
     // Phương thức kiểm tra xem có BookLending nào cho userId, bookId và returnDate là null không
     boolean existsByUser_UserIdAndBook_BookIdAndReturnDateIsNull(Long userId, Long bookId);
-    BookLending findByUser_UserIdAndBook_BookId(Long userId, Long bookId);
+    BookLending findByUser_UserIdAndBook_BookIdAndReturnDateIsNull(Long userId, Long bookId);
 }

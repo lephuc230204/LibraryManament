@@ -3,12 +3,14 @@ package com.example.librarymanagement.service.impl;
 import com.example.librarymanagement.exception.InvalidRefreshTokenException;
 import com.example.librarymanagement.model.dto.AuthDto;
 import com.example.librarymanagement.model.dto.UserDto;
+import com.example.librarymanagement.model.entity.CardLibrary;
 import com.example.librarymanagement.model.entity.Role;
 import com.example.librarymanagement.model.entity.User;
 import com.example.librarymanagement.payload.request.SignInForm;
 import com.example.librarymanagement.payload.request.SignUpForm;
 import com.example.librarymanagement.payload.response.ResponseData;
 import com.example.librarymanagement.payload.response.ResponseError;
+import com.example.librarymanagement.repository.CardLibraryRepository;
 import com.example.librarymanagement.repository.RoleRepository;
 import com.example.librarymanagement.repository.UserRepository;
 import com.example.librarymanagement.security.JwtTokenProvider;
@@ -36,6 +38,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final CardLibraryRepository cardLibraryRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
@@ -93,9 +96,21 @@ public class AuthServiceImpl implements AuthService {
                 .createdDate(LocalDate.now())
                 .status("ACTIVE")
                 .build();
-
         userRepository.save(newUser);
+
+        CardLibrary newCardLibrary = CardLibrary.builder()
+                .user(newUser)
+                .issued(LocalDate.now())
+                .expired(LocalDate.now().plusYears(1))
+                .status(CardLibrary.Status.ACTIVE)
+                .build();
+        cardLibraryRepository.save(newCardLibrary);
+
+        newUser.setCardLibrary(newCardLibrary);
+        userRepository.save(newUser);
+
         UserDto data = UserDto.to(newUser);
+
         return new ResponseData<>(200,"",data);
     }
 

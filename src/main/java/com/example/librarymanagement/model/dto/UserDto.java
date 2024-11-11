@@ -23,6 +23,7 @@ public class UserDto {
     @JsonFormat( pattern = "dd-MM-yyyy")
     private LocalDate dob;
     private String status;
+    private String cardLibrary;
 
     public static UserDto to(User user) {
         return UserDto.builder()
@@ -32,6 +33,7 @@ public class UserDto {
                 .phone(user.getPhone())
                 .roleName(user.getRole() != null ? user.getRole().getName() : null)
                 .createdDate(user.getCreatedDate())
+                .cardLibrary(user.getCardLibrary().getCardNumber())
                 .dob(user.getDob())
                 .status(user.getStatus())
                 .build();
