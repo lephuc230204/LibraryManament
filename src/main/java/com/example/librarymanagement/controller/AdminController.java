@@ -25,6 +25,8 @@ public class AdminController {
     @Autowired
     private UserService userService;
     @Autowired
+    private AuthService authService;
+    @Autowired
     private BookReservationService bookReservationService;
     @Autowired
     private BookLendingService bookLendingService;
@@ -154,8 +156,8 @@ public class AdminController {
     }
 
     @PostMapping("/users/register")
-    public ResponseEntity<ResponseData<UserDto>> register(@RequestBody RegisterForm form){
-        return ResponseEntity.ok(userService.register(form));
+    public ResponseEntity<ResponseData<UserDto> > register(@RequestBody SignUpForm form){
+        return ResponseEntity.ok(authService.register(form));
     }
 
 }

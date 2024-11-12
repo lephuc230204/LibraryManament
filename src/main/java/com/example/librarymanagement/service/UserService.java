@@ -24,5 +24,4 @@ public interface UserService {
 
     // CAP NHAT TRANG THAI NGUOI DUNG AVTICE-NONACTIVE
     ResponseData<Void> restoreUser(Long userId, StatusUserForm form);
-    ResponseData<UserDto> register(RegisterForm form);
 }

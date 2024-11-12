@@ -31,11 +31,6 @@ public class AuthController {
     public ResponseEntity login(@RequestBody SignInForm form){return ResponseEntity.ok(authService.login(form));
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<ResponseData<UserDto> > register(@RequestBody SignUpForm form){
-        return ResponseEntity.ok(authService.register(form));
-    }
-
     @GetMapping("/refresh")
     public ResponseEntity refreshToken(@RequestHeader("X-Refresh-Token") String refreshToken){return ResponseEntity.ok(authService.refreshJWT(refreshToken));}
 
@@ -43,7 +38,5 @@ public class AuthController {
     public ResponseEntity<ResponseData<String>> logout(HttpServletRequest request, HttpServletResponse response) {
         return ResponseEntity.ok(authService.logout(request, response));
     }
-
-
 
 }

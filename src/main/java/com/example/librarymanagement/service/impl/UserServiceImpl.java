@@ -135,31 +135,5 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Override
-    public ResponseData<UserDto> register(RegisterForm form){
-        log.info("Dang tao nguoi dung");
-        User existUser = userRepository.findByEmail(form.getEmail()).orElse(null);
-        if( existUser != null){return new ResponseError<>(400,"User has exist");}
-
-        if(!form.getPassword().equals(form.getConfirmPassword())){ return new ResponseError<>(400,"Password do not match");}
-
-        Role role = roleRepository.findByName(form.getRole()).orElse(null);
-        {if( existUser != null){return new ResponseError<>(400,"Role has exist");}}
-
-        User newUser = User.builder()
-                .username(form.getUsername())
-                .phone(form.getPhone())
-                .email(form.getEmail())
-                .password(passwordEncoder.encode(form.getPassword()))
-                .dob(form.getDob())
-                .status("ACTIVE")
-                .role(role)
-                .build();
-        userRepository.save(newUser);
-        UserDto data = UserDto.to(newUser);
-        log.info("Tao nguoi dung thanh cong");
-        return new ResponseData<>(200,"Create user successflly with ID: "+newUser.getUserId(),data);
-    }
-
 
 }
