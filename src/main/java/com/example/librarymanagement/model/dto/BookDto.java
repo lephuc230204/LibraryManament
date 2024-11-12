@@ -19,8 +19,8 @@ public class BookDto {
     private String bookName;
     private Long quantity;
     private Long currentQuantity;
-    private String category;
-    private String author;
+    private String categoryName;
+    private String authorName;
     private String publisher;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
@@ -35,8 +35,8 @@ public class BookDto {
                 .bookName(book.getBookName())
                 .quantity(book.getQuantity())
                 .currentQuantity(book.getCurrentQuantity())
-                .category(book.getCategory().getCategoryName())
-                .author(book.getAuthor().getName())
+                .categoryName(book.getCategory().getCategoryName())
+                .authorName(book.getAuthor().getName())
                 .publisher(book.getPublisher())
                 .postingDate(book.getPostingDate())
                 .crackId(book.getCrack().getId())
