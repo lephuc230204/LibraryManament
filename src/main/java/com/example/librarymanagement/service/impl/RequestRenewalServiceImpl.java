@@ -42,9 +42,9 @@ public class RequestRenewalServiceImpl implements RequestRenewalService {
 
         log.info("RequestRenewal creat");
 
-        Optional<BookLending> bookLendingOptional  = bookLendingRepository.findById(form.getBooklendingid());
+        Optional<BookLending> bookLendingOptional  = bookLendingRepository.findById(form.getBooklendingId());
         if(!bookLendingOptional.isPresent()) {
-            log.error("BookLending not found for ID: {}", form.getBooklendingid());
+            log.error("BookLending not found for ID: {}", form.getBooklendingId());
             return new ResponseError<>(404, "BookLending not found");
         }
 

@@ -8,7 +8,6 @@ import java.time.LocalDate;
 
 @Data
 public class RequestRenewalForm {
-
-        private Long booklendingid;
+    private Long booklendingId;
     private LocalDate renewalDate;
 }
