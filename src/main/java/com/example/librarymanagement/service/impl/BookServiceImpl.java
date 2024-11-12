@@ -103,7 +103,8 @@ public class BookServiceImpl implements BookService {
                 }
 
                 // Use the book's ID as the image filename
-                String fileName = newBook.getBookId().toString();
+                String fileName = newBook.getBookId().toString()
+                        + form.getImage().getOriginalFilename().substring(form.getImage().getOriginalFilename().lastIndexOf("."));
                 Path filePath = uploadPath.resolve(fileName);
                 form.getImage().transferTo(filePath.toFile());
 
@@ -167,7 +168,8 @@ public class BookServiceImpl implements BookService {
                 }
 
                 // Use the book ID as the image filename
-                String fileName = bookId.toString();
+                String fileName = bookId.toString() +
+                        form.getImage().getOriginalFilename().substring(form.getImage().getOriginalFilename().indexOf("."));
                 Path filePath = uploadPath.resolve(fileName);
                 form.getImage().transferTo(filePath.toFile());
 
