@@ -61,8 +61,8 @@ public class AdminController {
     // book reservation
     // tạo đặt sách
     @PostMapping("/book-reservations/create")
-    public ResponseEntity<ResponseData<BookReservationDto>> createBookReservation(@RequestBody BookReservationForm bookReservationForm, Principal principal){
-        return ResponseEntity.ok(bookReservationService.createBookReservation(bookReservationForm, principal));
+    public ResponseEntity<ResponseData<BookReservationDto>> createBookReservation(@RequestBody BookReservationForm bookReservationForm){
+        return ResponseEntity.ok(bookReservationService.createBookReservation(bookReservationForm ));
     };
     // Xem chi tiết đặt sách
     @GetMapping("/book-reservations/detail/{id}")

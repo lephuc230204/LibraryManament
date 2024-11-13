@@ -30,9 +30,9 @@ public class BookReservationImpl implements BookReservationService {
     private final UserRepository userRepository;
 
     @Override
-    public ResponseData<BookReservationDto> createBookReservation(BookReservationForm bookReservationForm, Principal principal) {
-        String loggedInUserEmail = principal.getName();
-        User user = userRepository.findByEmail(loggedInUserEmail)
+    public ResponseData<BookReservationDto> createBookReservation(BookReservationForm bookReservationForm) {
+
+        User user = userRepository.findByEmail(bookReservationForm.getEmail())
                 .orElse(null);
 
         if (user == null) {

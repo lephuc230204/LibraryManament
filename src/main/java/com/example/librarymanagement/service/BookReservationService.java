@@ -10,7 +10,7 @@ import java.util.List;
 public interface BookReservationService {
     // user
     // tạo đặt sách
-    ResponseData<BookReservationDto> createBookReservation(BookReservationForm bookReservationForm, Principal principal);
+    ResponseData<BookReservationDto> createBookReservation(BookReservationForm bookReservationForm);
     // lịch sử đặt sách
     ResponseData<List<BookReservationDto>> getBookReservationByUserId(Principal principal);
     // Xem chi tiết đặt sách của người dùng
