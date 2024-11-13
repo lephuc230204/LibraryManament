@@ -17,6 +17,7 @@ public class RequestRenewalDto {
     private Long id;
     private Long  bookLendingId;
     private String bookName;
+    private String image;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate renewalDate;
     private RequestRenewal.RequestRenewalStatus status;
@@ -26,6 +27,7 @@ public class RequestRenewalDto {
                 .id(requestRenewal.getId())
                 .bookLendingId(requestRenewal.getBookLending().getLendingId())
                 .bookName(requestRenewal.getBookLending().getBook().getBookName())
+                .image(requestRenewal.getBookLending().getBook().getImage())
                 .renewalDate(requestRenewal.getRenewalDate())
                 .status(requestRenewal.getStatus())
                 .build();

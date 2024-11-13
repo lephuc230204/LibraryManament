@@ -15,13 +15,17 @@ public class BookReservationDto {
     private LocalDate creationDate;
     private String email;
     private Long bookId;
+    private String bookName;
+    private String image;
     private BookReservation.Status status;
 
     public static BookReservationDto toDto(BookReservation bookReservation){
         return BookReservationDto.builder()
                 .reservationId(bookReservation.getReservationId())
                 .bookId(bookReservation.getBook().getBookId())
+                .bookName(bookReservation.getBook().getBookName())
                 .email(bookReservation.getUser().getEmail())
+                .image(bookReservation.getBook().getImage())
                 .status(bookReservation.getStatus())
                 .creationDate(LocalDate.now())
                 .build();

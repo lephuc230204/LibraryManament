@@ -15,6 +15,7 @@ public class BookLendingDto {
     private Long lendingId;
     private Long bookId;
     private String bookName;
+    private String image;
     private String author;
     @JsonFormat( pattern = "dd-MM-yyyy")
     private LocalDate creationDate;
@@ -30,6 +31,7 @@ public class BookLendingDto {
                 .lendingId(bookLending.getLendingId())
                 .bookId(bookLending.getBook().getBookId())
                 .bookName(bookLending.getBook().getBookName())
+                .image(bookLending.getBook().getImage())
                 .author(bookLending.getBook().getAuthor().getName())
                 .creationDate(bookLending.getCreationDate())
                 .dueDate(bookLending.getDueDate())

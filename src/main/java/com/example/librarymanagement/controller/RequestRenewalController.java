@@ -28,10 +28,6 @@ public class RequestRenewalController {
         return ResponseEntity.ok(requestRenewalService.creat(principal, form));
     }
 
-    @GetMapping("/")
-    public ResponseEntity getAllRequestRenewal() {
-        return ResponseEntity.ok(requestRenewalService.getAllRequestRenewal());
-    }
 
     @GetMapping("/me")
     public ResponseEntity getMyRequestRenewal(Principal principal) {

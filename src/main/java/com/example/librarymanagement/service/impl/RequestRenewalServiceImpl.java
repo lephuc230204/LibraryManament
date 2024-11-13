@@ -36,15 +36,24 @@ public class RequestRenewalServiceImpl implements RequestRenewalService {
 
     @Override
     public ResponseData<RequestRenewalDto> creat(Principal principal,RequestRenewalForm form) {
+        if (form.getBookLendingId() == null){
+            log.error("lending id null");
+        }
+        if (form.getRenewalDate() == null){
+            log.error("renewal date null");
+        }
+        if (form.getDescription() == null){
+            log.error("description null");
+        }
+
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new IllegalArgumentException("User not found with email: " + principal.getName()));
 
-
         log.info("RequestRenewal creat");
 
-        Optional<BookLending> bookLendingOptional  = bookLendingRepository.findById(form.getBooklendingId());
+        Optional<BookLending> bookLendingOptional  = bookLendingRepository.findById(form.getBookLendingId());
         if(!bookLendingOptional.isPresent()) {
-            log.error("BookLending not found for ID: {}", form.getBooklendingId());
+            log.error("BookLending not found for ID: {}", form.getBookLendingId());
             return new ResponseError<>(404, "BookLending not found");
         }
 
