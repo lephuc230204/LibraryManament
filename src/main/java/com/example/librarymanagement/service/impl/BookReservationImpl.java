@@ -32,6 +32,7 @@ public class BookReservationImpl implements BookReservationService {
     @Override
     public ResponseData<BookReservationDto> createBookReservation(BookReservationForm bookReservationForm) {
 
+        // Find the user by email
         User user = userRepository.findByEmail(bookReservationForm.getEmail())
                 .orElse(null);
 
@@ -40,26 +41,32 @@ public class BookReservationImpl implements BookReservationService {
             return new ResponseError<>(404, "Logged in user not found");
         }
 
+        // Find the book by ID
         Book book = bookRepository.findById(bookReservationForm.getBookId()).orElse(null);
         if (book == null) {
             log.error("Book not found for ID: {}", bookReservationForm.getBookId());
             return new ResponseError<>(404, "Book not found");
         }
 
-        if (book.getQuantity() <= 0) {
-            log.error("Book is not available for reservation: {}", book.getBookId());
-            return new ResponseError<>(400, "Book is not available for reservation");
+        // Check if the book's current quantity is zero
+        if (book.getCurrentQuantity() > 0) {
+            log.error("Book with ID: {} is still available for borrowing and cannot be reserved.", book.getBookId());
+            return new ResponseError<>(400, "Book is still available for borrowing; reservation is allowed only when stock is zero.");
         }
 
-        // Kiểm tra xem đã có đặt trước cho người dùng và sách này chưa
+        // Check if a reservation already exists for this user and book
         if (bookReservationRepository.existsByUserAndBook(user, book)) {
             log.error("Reservation already exists for User ID: {} and Book ID: {}", user.getId(), book.getBookId());
             return new ResponseError<>(400, "Reservation already exists for this book and user.");
         }
+
+        // Check if the book is reserved by another user
         if (bookReservationRepository.existsByBookAndStatus(book, BookReservation.Status.PENDING)) {
             log.error("Book with ID: {} is already reserved by another user.", book.getBookId());
             return new ResponseError<>(400, "This book is already reserved by another user.");
         }
+
+        // Create a new reservation with status PENDING
         BookReservation bookReservation = new BookReservation();
         bookReservation.setStatus(BookReservation.Status.PENDING);
         bookReservation.setCreationDate(LocalDate.now());
@@ -67,10 +74,12 @@ public class BookReservationImpl implements BookReservationService {
         bookReservation.setUser(user);
         bookReservationRepository.save(bookReservation);
 
+        // Convert the reservation to a DTO
         BookReservationDto bookReservationDto = BookReservationDto.toDto(bookReservation);
 
         return new ResponseData<>(200, "Book reservation created successfully", bookReservationDto);
     }
+
 
 
     @Override
