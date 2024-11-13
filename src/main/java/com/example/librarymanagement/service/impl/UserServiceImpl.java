@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService {
                 .map(UserDto::to)
                 .collect(Collectors.toList());
 
+        log.info("Tim kiem thanh cong");
         return new ResponseData<>(200, "Search results retrieved successfully", userDtos);
     }
 
