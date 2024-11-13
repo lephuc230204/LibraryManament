@@ -56,7 +56,10 @@ public class BookReservationImpl implements BookReservationService {
             log.error("Reservation already exists for User ID: {} and Book ID: {}", user.getId(), book.getBookId());
             return new ResponseError<>(400, "Reservation already exists for this book and user.");
         }
-
+        if (bookReservationRepository.existsByBookAndStatus(book, BookReservation.Status.PENDING)) {
+            log.error("Book with ID: {} is already reserved by another user.", book.getBookId());
+            return new ResponseError<>(400, "This book is already reserved by another user.");
+        }
         BookReservation bookReservation = new BookReservation();
         bookReservation.setStatus(BookReservation.Status.PENDING);
         bookReservation.setCreationDate(LocalDate.now());
