@@ -39,20 +39,18 @@ public class BookLendingImpl implements BookLendingService {
         log.info("Retrieving book with ID: {}", form.getBookid());
 
         Optional<User> User = userRepository.findByEmail(form.getUsername());
-        if (User == null) {
-            log.error("Author not found for ID: {}", form.getUsername());
+        if (!User.isPresent()) {
+            log.error("User not found for ID: {}", form.getUsername());
             return new ResponseError<>(404, "User not found");
         }
-        if (User.get().getCardLibrary().getExpired().isBefore(LocalDate.now())){
-            log.error("Book expired");
-            return new ResponseError<>(404, "Book expired");
+
+        if (User.get().getCardLibrary() == null || User.get().getCardLibrary().getExpired().isBefore(LocalDate.now())) {
+            log.error("Card expired or not found");
+            return new ResponseError<>(404, "Card expired or not found");
         }
 
-        Book book  = bookRepository.findById(form.getBookid()).orElse(null);
-        if (book == null) {
-            log.error("book not found for ID: {}", form.getBookid());
-            return new ResponseError<>(404, "Book not found");
-        }
+        Book book = bookRepository.findById(form.getBookid())
+                .orElseThrow(() -> new IllegalArgumentException("Book not found for ID: " + form.getBookid()));
 
         boolean alreadyBorrowed = bookLendingRepository.existsByUser_UserIdAndBook_BookIdAndReturnDateIsNull(User.get().getUserId(), book.getBookId());
         if (alreadyBorrowed) {
@@ -60,9 +58,9 @@ public class BookLendingImpl implements BookLendingService {
             return new ResponseError<>(400, "You have already borrowed this book");
         }
 
-        if (book.getQuantity() == 0){
-            log.error("Book is out off stock ");
-            return new ResponseError<>(404, "Book is out off stock");
+        if (book.getQuantity() == 0) {
+            log.error("Book is out of stock");
+            return new ResponseError<>(404, "Book is out of stock");
         }
 
         book.setCurrentQuantity(book.getCurrentQuantity() - 1);
@@ -79,10 +77,8 @@ public class BookLendingImpl implements BookLendingService {
         bookLendingRepository.save(newBookLending);
         BookLendingDto data = BookLendingDto.toDto(newBookLending);
         log.info("Book created successfully");
-        return new ResponseData<>(200, " created successfully",data);
+        return new ResponseData<>(200, "Created successfully", data);
     }
-
-
 
     @Override
     public ResponseData<List<BookLendingDto>> getAllBookLending() {
