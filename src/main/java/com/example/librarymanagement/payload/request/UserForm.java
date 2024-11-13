@@ -1,5 +1,7 @@
 package com.example.librarymanagement.payload.request;
 
+import com.example.librarymanagement.model.entity.BookReservation;
+import com.example.librarymanagement.model.entity.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
@@ -12,4 +14,6 @@ public class UserForm {
     private LocalDate dob;
     private String email;
     private String phone;
+    private String status;
+    private String role;
 }

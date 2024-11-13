@@ -5,8 +5,6 @@ import com.example.librarymanagement.model.dto.UserDto;
 import com.example.librarymanagement.model.entity.Role;
 import com.example.librarymanagement.model.entity.User;
 import com.example.librarymanagement.payload.request.ChangePasswordForm;
-import com.example.librarymanagement.payload.request.RegisterForm;
-import com.example.librarymanagement.payload.request.StatusUserForm;
 import com.example.librarymanagement.payload.request.UserForm;
 import com.example.librarymanagement.payload.response.ResponseData;
 import com.example.librarymanagement.payload.response.ResponseError;
@@ -46,10 +44,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseData<List<UserDto>> searchUser(String query) {
-        List<User> users = userRepository.searchUsersByFullNameOrEmail(query);
+        log.info("Đang tìm kiếm người dùng ");
+        List<User> users = userRepository.searchUsersByEmailContaining(query); // Tìm kiếm email chứa chuỗi query
+
         List<UserDto> userDtos = users.stream()
                 .map(UserDto::to)
                 .collect(Collectors.toList());
+
         return new ResponseData<>(200, "Search results retrieved successfully", userDtos);
     }
 
@@ -75,9 +76,15 @@ public class UserServiceImpl implements UserService {
     public ResponseData<String> update(Long id, UserForm form) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Role role = roleRepository.findByName(form.getRole())
+                        .orElseThrow(()-> new RuntimeException("Role not found"));
 
         user.setUsername(form.getUsername());
+        user.setEmail(form.getEmail());
+        user.setDob(form.getDob());
         user.setPhone(form.getPhone());
+        user.setStatus(form.getStatus());
+        user.setRole(role);
 
         userRepository.save(user);
         return new ResponseData<>(200, "User updated successfully");
@@ -121,19 +128,4 @@ public class UserServiceImpl implements UserService {
         UserDto userDto = UserDto.to(user); // Sử dụng UserDto.to(user)
         return new ResponseData<>(200, "User retrieved successfully", userDto);
     }
-
-    @Override
-    public ResponseData<Void> restoreUser(Long userId, StatusUserForm form){
-        User user = userRepository.findById(userId).orElse(null);
-        if(user == null){
-            return new ResponseError<> (400, "User not found");
-        }
-
-        user.setStatus(form.getStatus());
-        userRepository.save(user);
-        return new ResponseData<>(200,"Change status user succesfully", null);
-
-    }
-
-
 }

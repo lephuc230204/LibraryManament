@@ -146,14 +146,10 @@ public class AdminController {
     }
     // chua xong
     @GetMapping("/users/search/")
-    public ResponseEntity<ResponseData<List<UserDto>>> searchUser(String query){
-        return ResponseEntity.ok(userService.searchUser(query));
+    public ResponseEntity<ResponseData<List<UserDto>>> searchUser(@RequestParam String email){
+        return ResponseEntity.ok(userService.searchUser(email));
     }
 
-    @PatchMapping("/users/restore/{userId}")
-    public ResponseEntity<ResponseData<Void>> restoreUser(@PathVariable Long userId, @RequestBody StatusUserForm form){
-        return ResponseEntity.ok(userService.restoreUser(userId, form));
-    }
 
     @PostMapping("/users/register")
     public ResponseEntity<ResponseData<UserDto> > register(@RequestBody SignUpForm form){

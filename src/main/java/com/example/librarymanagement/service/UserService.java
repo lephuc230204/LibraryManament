@@ -4,8 +4,6 @@ package com.example.librarymanagement.service;
 import com.example.librarymanagement.model.dto.UserBasic;
 import com.example.librarymanagement.model.dto.UserDto;
 import com.example.librarymanagement.payload.request.ChangePasswordForm;
-import com.example.librarymanagement.payload.request.RegisterForm;
-import com.example.librarymanagement.payload.request.StatusUserForm;
 import com.example.librarymanagement.payload.request.UserForm;
 import com.example.librarymanagement.payload.response.ResponseData;
 
@@ -22,6 +20,4 @@ public interface UserService {
     ResponseData<UserBasic> getMe(Principal principal);
     ResponseData<String> updateMe(Principal principal, UserForm form);
 
-    // CAP NHAT TRANG THAI NGUOI DUNG AVTICE-NONACTIVE
-    ResponseData<Void> restoreUser(Long userId, StatusUserForm form);
 }
