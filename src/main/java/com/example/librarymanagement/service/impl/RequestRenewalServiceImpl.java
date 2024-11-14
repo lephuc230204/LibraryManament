@@ -127,10 +127,6 @@ public class RequestRenewalServiceImpl implements RequestRenewalService {
         bookRenewal.setDueDate(requestRenewal.getRenewalDate());
         bookLendingRepository.save(bookRenewal);
 
-        Book Book = bookRenewal.getBook();
-        Book.setCurrentQuantity(Book.getCurrentQuantity() - 1);
-        bookRepository.save(Book);
-
         log.info("BookLending updated successfully");
         return new ResponseData<>(200, " update successfully");
     }
