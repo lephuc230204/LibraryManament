@@ -45,13 +45,12 @@ public class NotificationServiceImpl implements NotificationService {
         for (BookLending bookLending : bookLendings) {
             // Tạo thông báo cho mỗi BookLending
             Notification notification = new Notification();
-            notification.setTitle("Lending Due Date Approaching");
-            notification.setContent("Your lending for book " + bookLending.getBook().getBookName() + " is due in less than 2 days.");
+            notification.setTitle("Sắp đến hạn trả sách ");
+            notification.setContent("Sách " + bookLending.getBook().getBookName() + " bạn đang mượn phải trả trong 2 ngày tới.");
             notification.setType(Notification.NotificationType.LENDING_DUE_DATE);
             notification.setUser(bookLending.getUser());  // Set user who borrowed the book
             notification.setCreateDate(LocalDate.now());
             notification.setNotificationStatus(Notification.NotificationStatus.ACTIVE);
-
             // Set relatedObject to the current BookLending
             notification.setRelatedObject(bookLending);
 
@@ -91,12 +90,12 @@ public class NotificationServiceImpl implements NotificationService {
 
         int notificationCount = 0;
 
-        // Bước 2: Tạo thông báo cho mỗi BookLending
+        // Tạo thông báo cho mỗi BookLending
         for (CardLibrary cardLibrary : cardLibraries) {
             // Tạo thông báo cho mỗi BookLending
             Notification notification = new Notification();
-            notification.setTitle(" CardLibrary Expired Date Approaching");
-            notification.setContent("YourNumberCard : " + cardLibrary.getCardNumber() + " is due in less than 2 days.");
+            notification.setTitle("Thẻ thư viện sắp hết hạn");
+            notification.setContent("Thẻ số : " + cardLibrary.getCardNumber() + " chỉ còn hạn sử dụng trong 2 ngày ");
             notification.setType(Notification.NotificationType.LENDING_DUE_DATE);
             notification.setUser(cardLibrary.getUser());  // Set user who borrowed the book
             notification.setCreateDate(LocalDate.now());
@@ -105,12 +104,12 @@ public class NotificationServiceImpl implements NotificationService {
             // Set relatedObject to the current BookLending
             notification.setRelatedObject(cardLibrary);
 
-            // Bước 3: Lưu thông báo vào database
+            // Lưu thông báo vào database
             notificationRepository.save(notification);
             notificationCount++;  // Tăng số lượng thông báo đã tạo
         }
 
-        // Bước 4: Trả về số lượng thông báo đã tạo
+        //  Trả về số lượng thông báo đã tạo
         return new ResponseData<>(200, "Created " + notificationCount + " notifications.");
 
     }

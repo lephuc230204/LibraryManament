@@ -32,6 +32,8 @@ public class AdminController {
     private BookLendingService bookLendingService;
     @Autowired
     private RequestRenewalService requestRenewalService;
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("/books")
     public ResponseEntity<ResponseData<List<BookDto>>> getAll(){
@@ -154,6 +156,17 @@ public class AdminController {
     @PostMapping("/users/register")
     public ResponseEntity<ResponseData<UserDto> > register(@RequestBody SignUpForm form){
         return ResponseEntity.ok(authService.register(form));
+    }
+
+    // add notification
+    @PostMapping("/notification/lending/create")
+    public ResponseEntity<ResponseData<String>> creatNotificationBookLending() {
+        return ResponseEntity.ok(notificationService.createNotificationWithLendingDueDateLessTwoDay());
+    }
+
+    @PostMapping("/notification/card-library/create")
+    public ResponseEntity<ResponseData<String>> creatNotificationCardLibrary() {
+        return ResponseEntity.ok(notificationService.createNotificationWithCardLibraryExpiredLessTwoDay());
     }
 
 }
