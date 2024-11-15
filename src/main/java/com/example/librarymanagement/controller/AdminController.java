@@ -160,6 +160,10 @@ public class AdminController {
     public ResponseEntity<ResponseData<String>> deleteUser(@PathVariable Long userId){
         return ResponseEntity.ok(userService.delete(userId));
     }
+    @PutMapping("/users/restore/{userId}")
+    public ResponseEntity<ResponseData<String>> restoreUser(@PathVariable Long userId){
+        return ResponseEntity.ok(userService.restore(userId));
+    }
     // chua xong
     @GetMapping("/users/search/")
     public ResponseEntity<ResponseData<List<UserDto>>> searchUser(@RequestParam String email){
