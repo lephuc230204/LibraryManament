@@ -41,13 +41,11 @@ public class UserServiceImpl implements UserService {
     public ResponseData<Page<UserDto>> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size,Sort.by(Sort.Order.asc("username")));
 
-        Page<User> usersPage = userRepository.findAll(pageable);
+        Page<User> usersPage = userRepository.findByRoleName("ROLE_USER",pageable);
         Page<UserDto> usersDtoPage = usersPage.map(UserDto::to);
 
         return new ResponseData<>(200, "Retrieved users successfully", usersDtoPage);
     }
-
-
     @Override
     public ResponseData<List<UserDto>> searchUser(String query) {
         log.info("Đang tìm kiếm người dùng ");
@@ -60,7 +58,6 @@ public class UserServiceImpl implements UserService {
         log.info("Tim kiem thanh cong");
         return new ResponseData<>(200, "Search results retrieved successfully", userDtos);
     }
-
     @Override
     public ResponseData<String> changePassword(ChangePasswordForm request, Principal connectedUser) {
         User user = userRepository.findByEmail(connectedUser.getName())
@@ -78,7 +75,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return new ResponseData<>(200, "Password changed successfully");
     }
-
     @Override
     public ResponseData<String> update(Long id, UserForm form) {
         User user = userRepository.findById(id)
@@ -90,12 +86,12 @@ public class UserServiceImpl implements UserService {
         user.setEmail(form.getEmail());
         user.setDob(form.getDob());
         user.setPhone(form.getPhone());
+        user.setStatus(form.getStatus());
         user.setRole(role);
 
         userRepository.save(user);
         return new ResponseData<>(200, "User updated successfully");
     }
-
     @Override
     public ResponseData<String> updateMe(Principal principal, UserForm form) {
         User user = userRepository.findByEmail(principal.getName())
@@ -108,7 +104,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return new ResponseData<>(200, "User updated successfully");
     }
-
     @Override
     public ResponseData<String> delete(Long id) {
         User user = userRepository.findById(id)
@@ -119,23 +114,12 @@ public class UserServiceImpl implements UserService {
         return new ResponseData<>(200, "User marked as deleted successfully");
     }
     @Override
-    public ResponseData<String> restore(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        user.setStatus("ACTIVE");
-        userRepository.save(user);
-        return new ResponseData<>(200, "restore successfully");
-    }
-
-    @Override
     public ResponseData<UserBasic> getMe(Principal principal) {
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         UserBasic userBasic = UserBasic.to(user);
         return new ResponseData<>(200, "User information retrieved successfully", userBasic);
     }
-
     @Override
     public ResponseData<UserDto> getById(Long id) {
         User user = userRepository.findById(id)
