@@ -2,6 +2,7 @@ package com.example.librarymanagement.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.time.LocalDate;
 @Entity
 @Data
 @Table
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Notification {
@@ -31,20 +33,23 @@ public class Notification {
     private LocalDate createDate;
     private NotificationStatus notificationStatus;
 
-    public  enum NotificationStatus{
+    public enum NotificationStatus{
         ACTIVE,
         NO_ACTIVE
     }
 
     public enum NotificationType {
         CARD_DUE_DATE,
-        LENDING_DUE_DATE
+        LENDING_DUE_DATE,
+        RESERVATION_DONE
     }
 
     public void setRelatedObject(Object object) {
         if (type == NotificationType.CARD_DUE_DATE && object instanceof CardLibrary) {
             this.relatedObject = object;
         } else if (type == NotificationType.LENDING_DUE_DATE && object instanceof BookLending) {
+            this.relatedObject = object;
+        } else if (type == NotificationType.RESERVATION_DONE && object instanceof BookReservation) {
             this.relatedObject = object;
         } else {
             throw new IllegalArgumentException("Invalid object type for the given NotificationType");

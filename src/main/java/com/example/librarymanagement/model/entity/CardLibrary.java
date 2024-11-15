@@ -18,7 +18,6 @@ import java.util.UUID;
 @Table( name = "card_library")
 public class CardLibrary {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String cardNumber;
 
     @OneToOne

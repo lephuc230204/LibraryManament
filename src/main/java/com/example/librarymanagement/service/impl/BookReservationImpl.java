@@ -3,12 +3,14 @@ package com.example.librarymanagement.service.impl;
 import com.example.librarymanagement.model.dto.BookReservationDto;
 import com.example.librarymanagement.model.entity.Book;
 import com.example.librarymanagement.model.entity.BookReservation;
+import com.example.librarymanagement.model.entity.Notification;
 import com.example.librarymanagement.model.entity.User;
 import com.example.librarymanagement.payload.request.BookReservationForm;
 import com.example.librarymanagement.payload.response.ResponseData;
 import com.example.librarymanagement.payload.response.ResponseError;
 import com.example.librarymanagement.repository.BookRepository;
 import com.example.librarymanagement.repository.BookReservationRepository;
+import com.example.librarymanagement.repository.NotificationRepository;
 import com.example.librarymanagement.repository.UserRepository;
 import com.example.librarymanagement.service.BookReservationService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class BookReservationImpl implements BookReservationService {
     private final BookReservationRepository bookReservationRepository;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
+    private final NotificationRepository notificationRepository;
 
     @Override
     public ResponseData<BookReservationDto> createBookReservation(BookReservationForm bookReservationForm) {
@@ -199,6 +202,17 @@ public class BookReservationImpl implements BookReservationService {
         bookReservation.setStatus(bookReservationForm.getStatus());
         bookReservation.setCreationDate(LocalDate.now());
         bookReservationRepository.save(bookReservation);
+
+        // tạo thông báo
+        Notification notification = new Notification();
+        notification.setTitle("Sách bạn đã đặt");
+        notification.setContent("Sách " + bookReservation.getBook().getBookName() + "bạn đặt đã có hãy đến thư viện để nhận");
+        notification.setType(Notification.NotificationType.RESERVATION_DONE);
+        notification.setUser(bookReservation.getUser());  // Set user who borrowed the book
+        notification.setCreateDate(LocalDate.now());
+        notification.setNotificationStatus(Notification.NotificationStatus.ACTIVE);
+        notification.setRelatedObject(bookReservation);
+        notificationRepository.save(notification);
 
         BookReservationDto bookReservationDto = BookReservationDto.toDto(bookReservation);
 

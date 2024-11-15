@@ -100,19 +100,19 @@ public class BookLendingImpl implements BookLendingService {
     }
 
     @Override
-    public ResponseData<BookLendingDto> returnBook(String username, Long bookid) {
-        log.info("Returning book with ID: {}", bookid);
+    public ResponseData<BookLendingDto> returnBook(String username, Long bookId) {
+        log.info("Returning book with ID: {}", bookId);
 
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with email: "));
 
-        BookLending bookLending  = bookLendingRepository.findByUser_UserIdAndBook_BookIdAndReturnDateIsNull(user.getUserId(), bookid);
+        BookLending bookLending  = bookLendingRepository.findByUser_UserIdAndBook_BookIdAndReturnDateIsNull(user.getUserId(), bookId);
         if(bookLending == null){
-            log.error("BookLending not found for ID: {}", bookid);
+            log.error("BookLending not found for ID: {}", bookId);
             return new ResponseError<>(404, "BookLending not found");
         }
 
-        Optional<Book> bookoptional = bookRepository.findById(bookid);
+        Optional<Book> bookoptional = bookRepository.findById(bookId);
         Book book = bookoptional.get();
         book.setCurrentQuantity(book.getCurrentQuantity() + 1);
         bookRepository.save(book);

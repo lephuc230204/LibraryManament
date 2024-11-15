@@ -105,20 +105,15 @@ public class AdminController {
     }
 
     // nguoi dung tra sách
-    @PutMapping("/return-book")
-    public ResponseEntity<?> returnBookLending(@RequestBody Map<String, Object> requestBody) {
-        String username = (String) requestBody.get("username");
-        Long bookId = ((Number) requestBody.get("bookId")).longValue(); // Chuyển đổi từ Number sang Long
-
+    @PutMapping("/return-book/{bookId}")
+    public ResponseEntity<?> returnBookLending(@RequestBody String username, @PathVariable Long bookId) {
         return ResponseEntity.ok(bookLendingService.returnBook(username, bookId));
     }
 
     // tra loi yeu cau gia haạn
-    @PutMapping("/book-renewal/reply")
-    public ResponseEntity<?> reply(@RequestBody Map<String, Object> requestBody) {
-        String reply = (String) requestBody.get("reply");
-        Long requestRenewalId = ((Number) requestBody.get("requestRenewalId")).longValue(); // Chuyển đổi từ Number sang Long
-        return ResponseEntity.ok(requestRenewalService.reply(requestRenewalId, reply));
+    @PutMapping("/book-renewal/reply/{requestRenewalId}")
+    public ResponseEntity<?> reply(@RequestBody String status,@PathVariable Long requestRenewalId ) {
+        return ResponseEntity.ok(requestRenewalService.reply(requestRenewalId, status));
     }
 
     // lay tat ca yeu cau gia han

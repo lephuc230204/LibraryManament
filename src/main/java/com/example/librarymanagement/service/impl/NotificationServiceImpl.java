@@ -34,14 +34,14 @@ public class NotificationServiceImpl implements NotificationService {
         log.info("Create notification with Lending Due Date Less Than Two Days");
 
 
-        // Bước 1: Lấy danh sách các BookLending có ngày hết hạn trong vòng 2 ngày
+        // Lấy danh sách các BookLending có ngày hết hạn trong vòng 2 ngày
         LocalDate startDate = LocalDate.now(); // Ngày hiện tại
         LocalDate endDate = startDate.plusDays(2);
         List<BookLending> bookLendings = bookLendingRepository.findAllWithDueDateWithinNextTwoDays(startDate,endDate);
 
         int notificationCount = 0;
 
-        // Bước 2: Tạo thông báo cho mỗi BookLending
+        // Tạo thông báo cho mỗi BookLending
         for (BookLending bookLending : bookLendings) {
             // Tạo thông báo cho mỗi BookLending
             Notification notification = new Notification();
@@ -54,12 +54,12 @@ public class NotificationServiceImpl implements NotificationService {
             // Set relatedObject to the current BookLending
             notification.setRelatedObject(bookLending);
 
-            // Bước 3: Lưu thông báo vào database
+            // Lưu thông báo vào database
             notificationRepository.save(notification);
             notificationCount++;  // Tăng số lượng thông báo đã tạo
         }
 
-        // Bước 4: Trả về số lượng thông báo đã tạo
+        // Trả về số lượng thông báo đã tạo
         return new ResponseData<>(200, "Created " + notificationCount + " notifications.");
     }
 
