@@ -15,6 +15,10 @@ import com.example.librarymanagement.service.BookLendingService;
 import com.example.librarymanagement.service.RequestRenewalService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -76,15 +80,15 @@ public class RequestRenewalServiceImpl implements RequestRenewalService {
         return new ResponseData<>(200, " created successfully",data);
     }
 
-
-
     @Override
-    public ResponseData<List<RequestRenewalDto>> getAllRequestRenewal() {
+    public ResponseData<Page<RequestRenewalDto>> getAllRequestRenewal(int page, int size) {
         log.info("RequestRenewal getAllRequestRenewal");
-        List<RequestRenewalDto> requestRenewalDtoList = requestRenewalRepository.findAll().stream()
-                .map(RequestRenewalDto::toDto)
-                .collect(Collectors.toList());
-        return new ResponseData<>(200, "Get all requests successfully", requestRenewalDtoList);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("creationDate")));
+
+        Page<RequestRenewal> requestRenewalPage = requestRenewalRepository.findAll(pageable);
+        Page<RequestRenewalDto> data = requestRenewalPage.map(RequestRenewalDto::toDto);
+
+        return new ResponseData<>(200, "Get all requests successfully", data);
 
     }
 

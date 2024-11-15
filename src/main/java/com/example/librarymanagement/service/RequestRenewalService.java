@@ -5,6 +5,7 @@ import com.example.librarymanagement.model.dto.RequestRenewalDto;
 import com.example.librarymanagement.model.entity.RequestRenewal;
 import com.example.librarymanagement.payload.request.RequestRenewalForm;
 import com.example.librarymanagement.payload.response.ResponseData;
+import org.springframework.data.domain.Page;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public interface RequestRenewalService {
     ResponseData<RequestRenewalDto> creat(Principal principal, RequestRenewalForm form);
-    ResponseData<List<RequestRenewalDto>> getAllRequestRenewal();
+    ResponseData<Page<RequestRenewalDto>> getAllRequestRenewal(int page, int size);
     ResponseData<List<RequestRenewalDto>> getMyRequestRenewal(Principal principal);
     ResponseData<BookLendingDto> reply(Long requestRenewalId, String reply);
     ResponseData<RequestRenewalDto> getRequestRenewalById(Long id);

@@ -1,10 +1,8 @@
 package com.example.librarymanagement.service.impl;
 
 import com.example.librarymanagement.model.dto.BookDto;
-import com.example.librarymanagement.model.entity.Author;
-import com.example.librarymanagement.model.entity.Book;
-import com.example.librarymanagement.model.entity.Category;
-import com.example.librarymanagement.model.entity.Crack;
+import com.example.librarymanagement.model.dto.UserDto;
+import com.example.librarymanagement.model.entity.*;
 import com.example.librarymanagement.payload.request.BookForm;
 import com.example.librarymanagement.payload.response.ResponseData;
 import com.example.librarymanagement.payload.response.ResponseError;
@@ -15,6 +13,10 @@ import com.example.librarymanagement.repository.CrackRepository;
 import com.example.librarymanagement.service.BookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,15 +41,15 @@ public class BookServiceImpl implements BookService {
     private CrackRepository crackRepository;
 
     @Override
-    public ResponseData<List<BookDto>> getAll() {
+    public ResponseData<Page<BookDto>> getAll(int n, int size) {
         log.info("Retrieving list of books");
+        Pageable pageable = PageRequest.of(n,size, Sort.by(Sort.Order.asc("bookName")));
 
-        List<BookDto> books = bookRepository.findAll().stream()
-                .map(BookDto::toDto)
-                .collect(Collectors.toList());
+        Page<Book> pageBook = bookRepository.findAll(pageable);
+        Page<BookDto> data = pageBook.map(BookDto::toDto);
 
         log.info("Get books successfully");
-        return new ResponseData<>(200, "Get books successfully", books);
+        return new ResponseData<>(200, "Get books successfully", data);
     }
     @Override
     public ResponseData<BookDto> getBookById(Long id) {

@@ -13,6 +13,10 @@ import com.example.librarymanagement.repository.UserRepository;
 import com.example.librarymanagement.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,13 +38,15 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
 
     @Override
-    public ResponseData<List<UserDto>> getAll() {
-        List<UserDto> listUsers = userRepository.findAll().stream()
-                .map(UserDto::to)
-                .filter(user -> !user.getRoleName().equals("ROLE_ADMIN"))
-                .collect(Collectors.toList());
-        return new ResponseData<>(200, "Retrieved all users successfully", listUsers);
+    public ResponseData<Page<UserDto>> getAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size,Sort.by(Sort.Order.asc("username")));
+
+        Page<User> usersPage = userRepository.findAll(pageable);
+        Page<UserDto> usersDtoPage = usersPage.map(UserDto::to);
+
+        return new ResponseData<>(200, "Retrieved users successfully", usersDtoPage);
     }
+
 
     @Override
     public ResponseData<List<UserDto>> searchUser(String query) {

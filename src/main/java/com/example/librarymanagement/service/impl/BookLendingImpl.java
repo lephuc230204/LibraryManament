@@ -13,6 +13,10 @@ import com.example.librarymanagement.repository.UserRepository;
 import com.example.librarymanagement.service.BookLendingService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -81,11 +85,12 @@ public class BookLendingImpl implements BookLendingService {
     }
 
     @Override
-    public ResponseData<List<BookLendingDto>> getAllBookLending() {
-        List<BookLendingDto> listBookLending = bookLendingRepository.findAll().stream()
-                .map(BookLendingDto::toDto)
-                .collect(Collectors.toList());
-        return new ResponseData<>(200, "Retrieved all users successfully", listBookLending);
+    public ResponseData<Page<BookLendingDto>> getAllBookLending(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size, Sort.by(Sort.Order.asc("lendingId")));
+        Page<BookLending> bookLendingPage = bookLendingRepository.findAll(pageable);
+        Page<BookLendingDto> data = bookLendingPage.map(BookLendingDto::toDto);
+
+        return new ResponseData<>(200, "Retrieved all users successfully",data );
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.example.librarymanagement.service;
 import com.example.librarymanagement.model.dto.BookReservationDto;
 import com.example.librarymanagement.payload.request.BookReservationForm;
 import com.example.librarymanagement.payload.response.ResponseData;
+import org.springframework.data.domain.Page;
 
 import java.security.Principal;
 import java.util.List;
@@ -25,6 +26,6 @@ public interface BookReservationService {
     // xác nhận đặt sách
     ResponseData<BookReservationDto> updateBookReservation(Long id, BookReservationForm bookReservationForm);
     // lấy ra tất cả đặt sách
-    ResponseData<List<BookReservationDto>> getAllBookReservation();
+    ResponseData<Page<BookReservationDto>> getAllBookReservation(int page, int size);
 
 }
