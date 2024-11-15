@@ -43,20 +43,18 @@ public class BookLendingImpl implements BookLendingService {
         log.info("Retrieving book with ID: {}", form.getBookid());
 
         Optional<User> User = userRepository.findByEmail(form.getUsername());
-        if (User == null) {
-            log.error("Author not found for ID: {}", form.getUsername());
+        if (!User.isPresent()) {
+            log.error("User not found for ID: {}", form.getUsername());
             return new ResponseError<>(404, "User not found");
         }
-        if (User.get().getCardLibrary().getExpired().isBefore(LocalDate.now())){
-            log.error("Book expired");
-            return new ResponseError<>(404, "Book expired");
+
+        if (User.get().getCardLibrary() == null || User.get().getCardLibrary().getExpired().isBefore(LocalDate.now())) {
+            log.error("Card expired or not found");
+            return new ResponseError<>(404, "Card expired or not found");
         }
 
-        Book book  = bookRepository.findById(form.getBookid()).orElse(null);
-        if (book == null) {
-            log.error("book not found for ID: {}", form.getBookid());
-            return new ResponseError<>(404, "Book not found");
-        }
+        Book book = bookRepository.findById(form.getBookid())
+                .orElseThrow(() -> new IllegalArgumentException("Book not found for ID: " + form.getBookid()));
 
         boolean alreadyBorrowed = bookLendingRepository.existsByUser_UserIdAndBook_BookIdAndReturnDateIsNull(User.get().getUserId(), book.getBookId());
         if (alreadyBorrowed) {
@@ -64,9 +62,9 @@ public class BookLendingImpl implements BookLendingService {
             return new ResponseError<>(400, "You have already borrowed this book");
         }
 
-        if (book.getQuantity() == 0){
-            log.error("Book is out off stock ");
-            return new ResponseError<>(404, "Book is out off stock");
+        if (book.getQuantity() == 0) {
+            log.error("Book is out of stock");
+            return new ResponseError<>(404, "Book is out of stock");
         }
 
         book.setCurrentQuantity(book.getCurrentQuantity() - 1);
@@ -83,10 +81,8 @@ public class BookLendingImpl implements BookLendingService {
         bookLendingRepository.save(newBookLending);
         BookLendingDto data = BookLendingDto.toDto(newBookLending);
         log.info("Book created successfully");
-        return new ResponseData<>(200, " created successfully",data);
+        return new ResponseData<>(200, "Created successfully", data);
     }
-
-
 
     @Override
     public ResponseData<Page<BookLendingDto>> getAllBookLending(int page, int size) {
@@ -109,19 +105,19 @@ public class BookLendingImpl implements BookLendingService {
     }
 
     @Override
-    public ResponseData<BookLendingDto> returnBook(String username, Long bookid) {
-        log.info("Returning book with ID: {}", bookid);
+    public ResponseData<BookLendingDto> returnBook(String username, Long bookId) {
+        log.info("Returning book with ID: {}", bookId);
 
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with email: "));
 
-        BookLending bookLending  = bookLendingRepository.findByUser_UserIdAndBook_BookIdAndReturnDateIsNull(user.getUserId(), bookid);
+        BookLending bookLending  = bookLendingRepository.findByUser_UserIdAndBook_BookIdAndReturnDateIsNull(user.getUserId(), bookId);
         if(bookLending == null){
-            log.error("BookLending not found for ID: {}", bookid);
+            log.error("BookLending not found for ID: {}", bookId);
             return new ResponseError<>(404, "BookLending not found");
         }
 
-        Optional<Book> bookoptional = bookRepository.findById(bookid);
+        Optional<Book> bookoptional = bookRepository.findById(bookId);
         Book book = bookoptional.get();
         book.setCurrentQuantity(book.getCurrentQuantity() + 1);
         bookRepository.save(book);
@@ -130,5 +126,26 @@ public class BookLendingImpl implements BookLendingService {
         bookLendingRepository.save(bookLending);
         BookLendingDto data = BookLendingDto.toDto(bookLending);
         return new ResponseData<>(200, "Returned book successfully",data);
+    }
+
+    @Override
+    public ResponseData<BookLendingDto> getBookLendingById(Long id) {
+        BookLending bookLending = bookLendingRepository.findById(id).orElse(null);
+        if (bookLending == null) {
+            log.error("BookLending not found for ID: {}", id);
+            return new ResponseError<>(404, "BookLending not found");
+        }
+        return new ResponseData<>(200,"Retrieved book successfully",BookLendingDto.toDto(bookLending));
+    }
+
+    @Override
+    public ResponseData<String> deleteBookLendingById(Long id) {
+        BookLending bookLending = bookLendingRepository.findById(id).orElse(null);
+        if (bookLending == null) {
+            log.error("BookLending not found for ID: {}", id);
+            return new ResponseError<>(404, "BookLending not found");
+        }
+        bookLendingRepository.delete(bookLending);
+        return new ResponseData<>(200, "Book Lending deleted successfully");
     }
 }

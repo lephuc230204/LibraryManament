@@ -14,7 +14,8 @@ public interface BookLendingService {
     ResponseData<Page<BookLendingDto>> getAllBookLending(int page, int size);
     ResponseData<List<BookLendingDto>> getMyBookLending(Principal principal);
     ResponseData<BookLendingDto> returnBook(String username,Long bookid);
-
+    ResponseData<BookLendingDto> getBookLendingById(Long id);
+    ResponseData<String> deleteBookLendingById(Long id);
 
 
 }

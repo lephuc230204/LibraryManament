@@ -1,5 +1,6 @@
 package com.example.librarymanagement.model.dto;
 
+import com.example.librarymanagement.model.entity.CardLibrary;
 import com.example.librarymanagement.model.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,7 @@ public class UserBasic {
     private String profilePicture;
     private LocalDate createdDate;
     private LocalDate dob;
+    private String cardLibrary;
 
     public static UserBasic to(User user) {
         return UserBasic.builder()
@@ -27,6 +29,7 @@ public class UserBasic {
                 .username(user.getUsername())
                 .phone(user.getPhone())
                 .createdDate(user.getCreatedDate())
+                .cardLibrary(user.getCardLibrary().getCardNumber())
                 .dob(user.getDob())
                 .build();
     }
