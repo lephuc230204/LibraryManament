@@ -103,26 +103,39 @@ public class AdminController {
     }
 
     // nguoi dung tra sách
-    @PutMapping("/return-book")
-    public ResponseEntity<?> returnBookLending(@RequestBody Map<String, Object> requestBody) {
-        String username = (String) requestBody.get("username");
-        Long bookId = ((Number) requestBody.get("bookId")).longValue(); // Chuyển đổi từ Number sang Long
-
+    @PutMapping("/return-book/{bookId}")
+    public ResponseEntity<?> returnBookLending(@RequestBody String username, @PathVariable Long bookId) {
         return ResponseEntity.ok(bookLendingService.returnBook(username, bookId));
     }
 
+    @GetMapping("/book-lending/{id}")
+    public ResponseEntity<ResponseData<BookLendingDto>> getBookLendingById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(bookLendingService.getBookLendingById(id));
+    }
+    @DeleteMapping("/book-lending/delete/{id}")
+    public ResponseEntity<ResponseData<String>> deleteBookLendingById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(bookLendingService.deleteBookLendingById(id));
+    }
+
     // tra loi yeu cau gia haạn
-    @PutMapping("/book-renewal/reply")
-    public ResponseEntity<?> reply(@RequestBody Map<String, Object> requestBody) {
-        String reply = (String) requestBody.get("reply");
-        Long requestRenewalId = ((Number) requestBody.get("requestRenewalId")).longValue(); // Chuyển đổi từ Number sang Long
-        return ResponseEntity.ok(requestRenewalService.reply(requestRenewalId, reply));
+    @PutMapping("/book-renewal/reply/{requestRenewalId}")
+    public ResponseEntity<?> reply(@RequestBody String status,@PathVariable Long requestRenewalId ) {
+        return ResponseEntity.ok(requestRenewalService.reply(requestRenewalId, status));
     }
 
     // lay tat ca yeu cau gia han
     @GetMapping("/book-renewal")
     public ResponseEntity<ResponseData<Page<RequestRenewalDto>>> getAllRequestRenewal(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(requestRenewalService.getAllRequestRenewal(page, size));
+    }
+
+    @GetMapping("/book-renewal/{id}")
+    public ResponseEntity<ResponseData<RequestRenewalDto>> getRequestRenewalById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(requestRenewalService.getRequestRenewalById(id));
+    }
+    @DeleteMapping("/book-renewal/delete/{id}")
+    public ResponseEntity<ResponseData<String>> deleteRequestRenewalById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(requestRenewalService.deleteRequestRenewalById(id));
     }
 
     @GetMapping("/users")
