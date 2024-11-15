@@ -1,8 +1,7 @@
 package com.example.librarymanagement.controller;
 
-import com.example.librarymanagement.model.dto.BookDto;
-import com.example.librarymanagement.model.dto.BookReservationDto;
-import com.example.librarymanagement.model.dto.UserDto;
+import com.example.librarymanagement.model.dto.*;
+import com.example.librarymanagement.model.entity.RequestRenewal;
 import com.example.librarymanagement.payload.request.*;
 import com.example.librarymanagement.payload.response.ResponseData;
 import com.example.librarymanagement.service.*;
@@ -97,7 +96,14 @@ public class AdminController {
     public ResponseEntity createBookLending(@RequestBody BookLendingForm form, Principal principal) {
         return ResponseEntity.ok(bookLendingService.create(form, principal));
     }
-
+    @GetMapping("/book-lending/{id}")
+    public ResponseEntity<ResponseData<BookLendingDto>> getBookLendingById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(bookLendingService.getBookLendingById(id));
+    }
+    @DeleteMapping("/book-lending/delete/{id}")
+    public ResponseEntity<ResponseData<String>> deleteBookLendingById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(bookLendingService.deleteBookLendingById(id));
+    }
     // Lấy tất ca sách đã mươợn
     @GetMapping("/book-lending/getall")
     public ResponseEntity getAllBookLending() {
@@ -125,6 +131,14 @@ public class AdminController {
     @GetMapping("/book-renewal")
     public ResponseEntity getAllRequestRenewal() {
         return ResponseEntity.ok(requestRenewalService.getAllRequestRenewal());
+    }
+    @GetMapping("/book-renewal/{id}")
+    public ResponseEntity<ResponseData<RequestRenewalDto>> getRequestRenewalById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(requestRenewalService.getRequestRenewalById(id));
+    }
+    @DeleteMapping("/book-renewal/delete/{id}")
+    public ResponseEntity<ResponseData<String>> deleteRequestRenewalById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(requestRenewalService.deleteRequestRenewalById(id));
     }
 
     @GetMapping ("/users")

@@ -130,4 +130,26 @@ public class RequestRenewalServiceImpl implements RequestRenewalService {
         log.info("BookLending updated successfully");
         return new ResponseData<>(200, " update successfully");
     }
+
+    @Override
+    public ResponseData<RequestRenewalDto> getRequestRenewalById(Long id) {
+        RequestRenewal requestRenewal = requestRenewalRepository.findById(id).orElseThrow(null);
+        if(requestRenewal == null){
+            log.error("RequestRenewal not found for ID: {}", id);
+            return new ResponseError<>(404, "RequestRenewal not found");
+        }
+        return new ResponseData<>(200,"Get RequestRenewal successfully",RequestRenewalDto.toDto(requestRenewal));
+    }
+
+    @Override
+    public ResponseData<String> deleteRequestRenewalById(Long id) {
+        RequestRenewal requestRenewal = requestRenewalRepository.findById(id).orElseThrow(null);
+        if(requestRenewal == null){
+            log.error("RequestRenewal not found for ID: {}", id);
+            return new ResponseError<>(404, "RequestRenewal not found");
+        }
+        requestRenewalRepository.delete(requestRenewal);
+        return new ResponseData<>(200,"Delete RequestRenewal successfully");
+    }
+
 }
