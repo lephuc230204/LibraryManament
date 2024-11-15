@@ -6,12 +6,13 @@ import com.example.librarymanagement.model.dto.UserDto;
 import com.example.librarymanagement.payload.request.ChangePasswordForm;
 import com.example.librarymanagement.payload.request.UserForm;
 import com.example.librarymanagement.payload.response.ResponseData;
+import org.springframework.data.domain.Page;
 
 import java.security.Principal;
 import java.util.List;
 
 public interface UserService {
-    ResponseData<List<UserDto>> getAll();
+    ResponseData<Page<UserDto>> getAll(int page, int size);
     ResponseData<List<UserDto>> searchUser(String query);
     ResponseData<UserDto> getById(Long id);
     ResponseData<String> changePassword(ChangePasswordForm request, Principal connectedUser);

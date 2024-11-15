@@ -1,13 +1,13 @@
 package com.example.librarymanagement.controller;
 
-import com.example.librarymanagement.model.dto.BookDto;
-import com.example.librarymanagement.model.dto.BookReservationDto;
-import com.example.librarymanagement.model.dto.UserDto;
+import com.example.librarymanagement.model.dto.*;
+import com.example.librarymanagement.model.entity.User;
 import com.example.librarymanagement.payload.request.*;
 import com.example.librarymanagement.payload.response.ResponseData;
 import com.example.librarymanagement.service.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,8 +34,8 @@ public class AdminController {
     private RequestRenewalService requestRenewalService;
 
     @GetMapping("/books")
-    public ResponseEntity<ResponseData<List<BookDto>>> getAll(){
-        return ResponseEntity.ok(bookService.getAll());
+    public ResponseEntity<ResponseData<Page<BookDto>>> getBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        return ResponseEntity.ok(bookService.getAll(page,size));
     }
 
     @PostMapping("/books/create")
@@ -86,8 +86,8 @@ public class AdminController {
 
     // Lấy tất cả đặt sách
     @GetMapping("/book-reservations")
-    public ResponseEntity<ResponseData<List<BookReservationDto>>> getAllBookReservations() {
-        return ResponseEntity.ok(bookReservationService.getAllBookReservation());
+    public ResponseEntity<ResponseData<Page<BookReservationDto>>> getAllBookReservation(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(bookReservationService.getAllBookReservation(page , size));
     }
 
     // tạo 1 mươn sách
@@ -98,8 +98,8 @@ public class AdminController {
 
     // Lấy tất ca sách đã mươợn
     @GetMapping("/book-lending/getall")
-    public ResponseEntity getAllBookLending() {
-        return ResponseEntity.ok(bookLendingService.getAllBookLending());
+    public ResponseEntity<ResponseData<Page<BookLendingDto>>> getAllBookLending(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(bookLendingService.getAllBookLending(page, size));
     }
 
     // nguoi dung tra sách
@@ -121,14 +121,15 @@ public class AdminController {
 
     // lay tat ca yeu cau gia han
     @GetMapping("/book-renewal")
-    public ResponseEntity getAllRequestRenewal() {
-        return ResponseEntity.ok(requestRenewalService.getAllRequestRenewal());
+    public ResponseEntity<ResponseData<Page<RequestRenewalDto>>> getAllRequestRenewal(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(requestRenewalService.getAllRequestRenewal(page, size));
     }
 
-    @GetMapping ("/users")
-    public ResponseEntity<ResponseData<List<UserDto>>> gelAllUser(){
-        return ResponseEntity.ok(userService.getAll());
+    @GetMapping("/users")
+    public ResponseEntity<ResponseData<Page<UserDto>>> getAllUser(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(userService.getAll(page, size));
     }
+
 
     @GetMapping("/users/{userId}")
     public ResponseEntity<ResponseData<UserDto>> getUserById(@PathVariable Long userId){

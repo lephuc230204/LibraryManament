@@ -13,6 +13,10 @@ import com.example.librarymanagement.repository.UserRepository;
 import com.example.librarymanagement.service.BookReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -197,11 +201,13 @@ public class BookReservationImpl implements BookReservationService {
     }
 
     @Override
-    public ResponseData<List<BookReservationDto>>getAllBookReservation() {
-        List<BookReservationDto> bookReservations = bookReservationRepository.findAll().stream()
-                .map(BookReservationDto::toDto)
-                .collect(Collectors.toList());
+    public ResponseData<Page<BookReservationDto>> getAllBookReservation(int page, int size) {
+        Pageable pageable = PageRequest.of(page,size, Sort.by(Sort.Order.asc("reservationId")));
+
+        Page<BookReservation> bookReservationPage = bookReservationRepository.findAll(pageable);
+        Page<BookReservationDto> data = bookReservationPage.map(BookReservationDto::toDto);
+
         log.info("Get bookReservations successfully");
-        return new ResponseData<>(200, "Get bookReservations successfully", bookReservations);
+        return new ResponseData<>(200, "Get bookReservations successfully", data);
     }
 }
