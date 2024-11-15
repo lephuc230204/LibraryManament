@@ -114,6 +114,15 @@ public class UserServiceImpl implements UserService {
         return new ResponseData<>(200, "User marked as deleted successfully");
     }
     @Override
+    public ResponseData<String> restore(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        user.setStatus("ACTIVE");
+        userRepository.save(user);
+        return new ResponseData<>(200, "restore successfully");
+    }
+    @Override
     public ResponseData<UserBasic> getMe(Principal principal) {
         User user = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
