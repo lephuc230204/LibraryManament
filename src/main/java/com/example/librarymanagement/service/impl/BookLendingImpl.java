@@ -122,4 +122,25 @@ public class BookLendingImpl implements BookLendingService {
         BookLendingDto data = BookLendingDto.toDto(bookLending);
         return new ResponseData<>(200, "Returned book successfully",data);
     }
+
+    @Override
+    public ResponseData<BookLendingDto> getBookLendingById(Long id) {
+        BookLending bookLending = bookLendingRepository.findById(id).orElse(null);
+        if (bookLending == null) {
+            log.error("BookLending not found for ID: {}", id);
+            return new ResponseError<>(404, "BookLending not found");
+        }
+        return new ResponseData<>(200,"Retrieved book successfully",BookLendingDto.toDto(bookLending));
+    }
+
+    @Override
+    public ResponseData<String> deleteBookLendingById(Long id) {
+        BookLending bookLending = bookLendingRepository.findById(id).orElse(null);
+        if (bookLending == null) {
+            log.error("BookLending not found for ID: {}", id);
+            return new ResponseError<>(404, "BookLending not found");
+        }
+        bookLendingRepository.delete(bookLending);
+        return new ResponseData<>(200, "Book Lending deleted successfully");
+    }
 }
