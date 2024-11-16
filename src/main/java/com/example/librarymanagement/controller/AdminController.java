@@ -108,8 +108,8 @@ public class AdminController {
 
     // nguoi dung tra sách
     @PutMapping("/return-book/{bookId}")
-    public ResponseEntity<?> returnBookLending(@RequestParam String username, @PathVariable Long bookId) {
-        return ResponseEntity.ok(bookLendingService.returnBook(username, bookId));
+    public ResponseEntity<?> returnBookLending(@RequestParam String email, @PathVariable Long bookId) {
+        return ResponseEntity.ok(bookLendingService.returnBook(email, bookId));
     }
 
     @GetMapping("/book-lending/{id}")

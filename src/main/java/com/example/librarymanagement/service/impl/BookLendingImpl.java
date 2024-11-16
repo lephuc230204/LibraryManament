@@ -42,24 +42,23 @@ public class BookLendingImpl implements BookLendingService {
                 .orElseThrow(() -> new IllegalArgumentException("staff not found with email: " + principal.getName()));
         log.info("Retrieving book with ID: {}", form.getBookId());
 
-        Optional<User> User = userRepository.findByEmail(form.getEmail());
-        if (!User.isPresent()) {
+        User user = userRepository.findByEmail(form.getEmail()).orElse(null);
+        if(user == null) {
             log.error("User not found for ID: {}", form.getEmail());
             return new ResponseError<>(404, "User not found");
         }
 
-        if (User.get().getCardLibrary() == null || User.get().getCardLibrary().getExpired().isBefore(LocalDate.now())) {
+        if (user.getCardLibrary() == null || user.getCardLibrary().getExpired().isBefore(LocalDate.now())) {
             log.error("Card expired or not found");
             return new ResponseError<>(404, "Card expired or not found");
         }
 
-        Book book = bookRepository.findById(form.getBookId())
-                .orElseThrow(() -> new IllegalArgumentException("Book not found for ID: " + form.getBookId()));
-
+        Book book = bookRepository.findById(form.getBookId()).orElse(null);
+        log.error("Book not found for ID: " + form.getBookId());
         if (book == null){
-            return new ResponseError<>(404,"Book not found");
+            return new ResponseError<>(404,"Book not found with ID: "+form.getBookId());
         }
-        boolean alreadyBorrowed = bookLendingRepository.existsByUser_UserIdAndBook_BookIdAndReturnDateIsNull(User.get().getUserId(), book.getBookId());
+        boolean alreadyBorrowed = bookLendingRepository.existsByUser_UserIdAndBook_BookIdAndReturnDateIsNull(user.getUserId(), book.getBookId());
         if (alreadyBorrowed) {
             log.warn("User has already borrowed this book");
             return new ResponseError<>(400, "You have already borrowed this book");
@@ -77,7 +76,7 @@ public class BookLendingImpl implements BookLendingService {
         newBookLending.setBook(book);
         newBookLending.setCreationDate(LocalDate.now());
         newBookLending.setDueDate(form.getDueDate());
-        newBookLending.setUser(User.get());
+        newBookLending.setUser(user);
         newBookLending.setStaff(Userstaff);
 
         // Lưu BookLending mới vào cơ sở dữ liệu
@@ -109,11 +108,11 @@ public class BookLendingImpl implements BookLendingService {
     }
 
     @Override
-    public ResponseData<BookLendingDto> returnBook(String username, Long bookId) {
+    public ResponseData<BookLendingDto> returnBook(String email, Long bookId) {
         log.info("Returning book with ID: {}", bookId);
 
-        User user = userRepository.findByEmail(username)
-                .orElseThrow(() -> new IllegalArgumentException("User not found with email: "));
+        User user = userRepository.findByEmail(email).orElse(null);
+        if(user==null){ return new ResponseError<>(404,"User not found with email: "+email);}
 
         BookLending bookLending  = bookLendingRepository.findByUser_UserIdAndBook_BookIdAndReturnDateIsNull(user.getUserId(), bookId);
         if(bookLending == null){
