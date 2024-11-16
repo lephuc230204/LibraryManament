@@ -56,6 +56,9 @@ public class BookLendingImpl implements BookLendingService {
         Book book = bookRepository.findById(form.getBookId())
                 .orElseThrow(() -> new IllegalArgumentException("Book not found for ID: " + form.getBookId()));
 
+        if (book == null){
+            return new ResponseError<>(404,"Book not found");
+        }
         boolean alreadyBorrowed = bookLendingRepository.existsByUser_UserIdAndBook_BookIdAndReturnDateIsNull(User.get().getUserId(), book.getBookId());
         if (alreadyBorrowed) {
             log.warn("User has already borrowed this book");
