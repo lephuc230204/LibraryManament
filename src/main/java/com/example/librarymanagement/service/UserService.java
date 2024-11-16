@@ -18,6 +18,7 @@ public interface UserService {
     ResponseData<String> changePassword(ChangePasswordForm request, Principal connectedUser);
     ResponseData<String> update(Long id, UserForm form);
     ResponseData<String> delete(Long id);
+    ResponseData<String> restore(Long id);
     ResponseData<UserBasic> getMe(Principal principal);
     ResponseData<String> updateMe(Principal principal, UserForm form);
 

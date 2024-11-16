@@ -40,11 +40,11 @@ public class BookLendingImpl implements BookLendingService {
 
         User Userstaff = userRepository.findByEmail(principal.getName())
                 .orElseThrow(() -> new IllegalArgumentException("staff not found with email: " + principal.getName()));
-        log.info("Retrieving book with ID: {}", form.getBookid());
+        log.info("Retrieving book with ID: {}", form.getBookId());
 
-        Optional<User> User = userRepository.findByEmail(form.getUsername());
+        Optional<User> User = userRepository.findByEmail(form.getEmail());
         if (!User.isPresent()) {
-            log.error("User not found for ID: {}", form.getUsername());
+            log.error("User not found for ID: {}", form.getEmail());
             return new ResponseError<>(404, "User not found");
         }
 
@@ -53,8 +53,8 @@ public class BookLendingImpl implements BookLendingService {
             return new ResponseError<>(404, "Card expired or not found");
         }
 
-        Book book = bookRepository.findById(form.getBookid())
-                .orElseThrow(() -> new IllegalArgumentException("Book not found for ID: " + form.getBookid()));
+        Book book = bookRepository.findById(form.getBookId())
+                .orElseThrow(() -> new IllegalArgumentException("Book not found for ID: " + form.getBookId()));
 
         boolean alreadyBorrowed = bookLendingRepository.existsByUser_UserIdAndBook_BookIdAndReturnDateIsNull(User.get().getUserId(), book.getBookId());
         if (alreadyBorrowed) {

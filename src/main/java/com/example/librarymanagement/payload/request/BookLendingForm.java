@@ -6,8 +6,7 @@ import lombok.Data;
 
 @Data
 public class BookLendingForm {
-    private Long bookid;
+    private Long bookId;
     private LocalDate dueDate;
-    private String username;
-    private User staff;
+    private String email;
 }
