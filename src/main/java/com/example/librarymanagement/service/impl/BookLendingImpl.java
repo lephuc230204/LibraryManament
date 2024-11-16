@@ -100,6 +100,7 @@ public class BookLendingImpl implements BookLendingService {
         List<BookLendingDto> listMyBookLending = bookLendingRepository.findByUserAndReturnDateIsNull(user).stream()
                 .map(BookLendingDto::toDto)
                 .collect(Collectors.toList());
+        log.info("Get My Notifications");
         return new ResponseData<>(200, "Retrieved all users successfully", listMyBookLending);
 
     }

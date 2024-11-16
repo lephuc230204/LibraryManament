@@ -32,6 +32,8 @@ public class AdminController {
     private BookLendingService bookLendingService;
     @Autowired
     private RequestRenewalService requestRenewalService;
+    @Autowired
+    private NotificationService notificationService;
 
     @GetMapping("/books")
     public ResponseEntity<ResponseData<Page<BookDto>>> getBooks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
@@ -106,7 +108,7 @@ public class AdminController {
 
     // nguoi dung tra sách
     @PutMapping("/return-book/{bookId}")
-    public ResponseEntity<?> returnBookLending(@RequestBody String username, @PathVariable Long bookId) {
+    public ResponseEntity<?> returnBookLending(@RequestParam String username, @PathVariable Long bookId) {
         return ResponseEntity.ok(bookLendingService.returnBook(username, bookId));
     }
 
@@ -121,7 +123,7 @@ public class AdminController {
 
     // tra loi yeu cau gia haạn
     @PutMapping("/book-renewal/reply/{requestRenewalId}")
-    public ResponseEntity<?> reply(@RequestBody String status,@PathVariable Long requestRenewalId ) {
+    public ResponseEntity<?> reply(@RequestParam String status,@PathVariable Long requestRenewalId ) {
         return ResponseEntity.ok(requestRenewalService.reply(requestRenewalId, status));
     }
 
@@ -170,6 +172,16 @@ public class AdminController {
     @PostMapping("/users/register")
     public ResponseEntity<ResponseData<UserDto> > register(@RequestBody SignUpForm form){
         return ResponseEntity.ok(authService.register(form));
+    }
+
+    // add notification
+    @PostMapping("/notification/lending/create")
+    public ResponseEntity<ResponseData<String>> creatNotificationBookLending() {
+        return ResponseEntity.ok(notificationService.createNotificationWithLendingDueDateLessTwoDay());
+    }
+    @PostMapping("/notification/card-library/create")
+    public ResponseEntity<ResponseData<String>> creatNotificationCardLibrary() {
+        return ResponseEntity.ok(notificationService.createNotificationWithCardLibraryExpiredLessTwoDay());
     }
 
 }
