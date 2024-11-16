@@ -13,7 +13,7 @@ public interface BookLendingService {
     ResponseData<BookLendingDto> create(BookLendingForm form, Principal principal);
     ResponseData<Page<BookLendingDto>> getAllBookLending(int page, int size);
     ResponseData<List<BookLendingDto>> getMyBookLending(Principal principal);
-    ResponseData<BookLendingDto> returnBook(String username,Long bookid);
+    ResponseData<BookLendingDto> returnBook(String username,Long bookId);
     ResponseData<BookLendingDto> getBookLendingById(Long id);
     ResponseData<String> deleteBookLendingById(Long id);
 
