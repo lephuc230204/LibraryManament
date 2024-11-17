@@ -83,7 +83,7 @@ public class RequestRenewalServiceImpl implements RequestRenewalService {
     @Override
     public ResponseData<Page<RequestRenewalDto>> getAllRequestRenewal(int page, int size) {
         log.info("RequestRenewal getAllRequestRenewal");
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("creationDate")));
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.asc("id")));
 
         Page<RequestRenewal> requestRenewalPage = requestRenewalRepository.findAll(pageable);
         Page<RequestRenewalDto> data = requestRenewalPage.map(RequestRenewalDto::toDto);
