@@ -107,9 +107,15 @@ public class AdminController {
     }
 
     // nguoi dung tra sách
-    @PutMapping("/return-book/{bookId}")
-    public ResponseEntity<?> returnBookLending(@RequestParam String email, @PathVariable Long bookId) {
-        return ResponseEntity.ok(bookLendingService.returnBook(email, bookId));
+    @PutMapping("/return-book/{bookLendingId}")
+    public ResponseEntity<?> returnBookLending(@PathVariable Long bookLendingId) {
+        return ResponseEntity.ok(bookLendingService.returnBook(bookLendingId));
+    }
+
+    // laays bookLiding theo email va bookId
+    @GetMapping("/book-lending/get-email-booId")
+    public ResponseEntity<ResponseData<BookLendingDto>> getBookLendingByEmailAndBookId(@RequestBody BookLendingGetByUserAndBookForm form) {
+        return ResponseEntity.ok(bookLendingService.getBookLendingByEmailBookId(form.getEmail(),form.getBookId()));
     }
 
     @GetMapping("/book-lending/{id}")

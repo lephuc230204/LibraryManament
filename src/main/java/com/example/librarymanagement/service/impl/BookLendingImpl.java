@@ -108,18 +108,15 @@ public class BookLendingImpl implements BookLendingService {
     }
 
     @Override
-    public ResponseData<BookLendingDto> returnBook(String email, Long bookId) {
-        log.info("Returning book with ID: {}", bookId);
+    public ResponseData<BookLendingDto> returnBook(Long bookLendingId) {
 
-        User user = userRepository.findByEmail(email).orElse(null);
-        if(user==null){ return new ResponseError<>(404,"User not found with email: "+email);}
-
-        BookLending bookLending  = bookLendingRepository.findByUser_UserIdAndBook_BookIdAndReturnDateIsNull(user.getUserId(), bookId);
-        if(bookLending == null){
-            log.error("BookLending not found for ID: {}", bookId);
+        BookLending bookLending = bookLendingRepository.findById(bookLendingId).orElse(null);
+        if (bookLending == null) {
+            log.error("BookLending not found for ID: {}", bookLendingId);
             return new ResponseError<>(404, "BookLending not found");
         }
 
+        Long bookId = bookLending.getBook().getBookId();
         Optional<Book> bookoptional = bookRepository.findById(bookId);
         Book book = bookoptional.get();
         book.setCurrentQuantity(book.getCurrentQuantity() + 1);
@@ -150,5 +147,19 @@ public class BookLendingImpl implements BookLendingService {
         }
         bookLendingRepository.delete(bookLending);
         return new ResponseData<>(200, "Book Lending deleted successfully");
+    }
+
+    @Override
+    public ResponseData<BookLendingDto> getBookLendingByEmailBookId(String email, Long bookId) {
+
+        User user = userRepository.findByEmail(email).orElse(null);
+        if(user==null){ return new ResponseError<>(404,"User not found with email: "+email);}
+
+        BookLending bookLending  = bookLendingRepository.findByUser_UserIdAndBook_BookIdAndReturnDateIsNull(user.getUserId(), bookId);
+        if(bookLending == null){
+            log.error("BookLending not found for ID: {}", bookId);
+            return new ResponseError<>(404, "BookLending not found");
+        }
+        return new ResponseData<>(200,"get book successfully",BookLendingDto.toDto(bookLending));
     }
 }
