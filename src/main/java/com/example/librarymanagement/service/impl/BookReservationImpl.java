@@ -203,25 +203,37 @@ public class BookReservationImpl implements BookReservationService {
             return new ResponseError<>(404, "Book Reservation not found");
         }
 
+        // Cập nhật status và ngày tạo
         bookReservation.setStatus(bookReservationForm.getStatus());
         bookReservation.setCreationDate(LocalDate.now());
-        bookReservationRepository.save(bookReservation);
 
-        // tạo thông báo
+        // Kiểm tra nếu status là CONFIRMED thì tạo thông báo
         Notification notification = new Notification();
         notification.setTitle("Sách bạn đã đặt");
-        notification.setContent("Sách " + bookReservation.getBook().getBookName() + "bạn đặt đã có hãy đến thư viện để nhận");
-        notification.setType(Notification.NotificationType.RESERVATION_DONE);
+
+        if (bookReservation.getStatus() == BookReservation.Status.CONFIRMED) {
+            notification.setContent("Sách " + bookReservation.getBook().getBookName() + " bạn đặt đã có, hãy đến thư viện để nhận");
+            notification.setType(Notification.NotificationType.RESERVATION_DONE);
+        } else {
+            notification.setContent("Sách " + bookReservation.getBook().getBookName() + " bạn đặt không có hàng, rất xin lỗi vì sự bất tiện này");
+            notification.setType(Notification.NotificationType.RESERVATION_CANCELED);
+        }
+
         notification.setUser(bookReservation.getUser());  // Set user who borrowed the book
         notification.setCreateDate(LocalDate.now());
         notification.setNotificationStatus(Notification.NotificationStatus.ACTIVE);
         notification.setRelatedObject(bookReservation);
         notificationRepository.save(notification);
 
+        bookReservationRepository.save(bookReservation);
+
+        // Chuyển đổi đối tượng BookReservation thành DTO và trả về
         BookReservationDto bookReservationDto = BookReservationDto.toDto(bookReservation);
 
         return new ResponseData<>(200, "Update bookReservation successfully", bookReservationDto);
     }
+
+
 
     @Override
     public ResponseData<Page<BookReservationDto>> getAllBookReservation(int page, int size) {
