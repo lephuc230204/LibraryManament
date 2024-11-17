@@ -145,6 +145,10 @@ public class BookLendingImpl implements BookLendingService {
             log.error("BookLending not found for ID: {}", id);
             return new ResponseError<>(404, "BookLending not found");
         }
+        if (bookLending.getReturnDate() == null){
+            log.error("BookLending returnDate is null");
+            return new ResponseError<>(400, "Unreturned books cannot be deleted.");
+        }
         bookLendingRepository.delete(bookLending);
         return new ResponseData<>(200, "Book Lending deleted successfully");
     }
