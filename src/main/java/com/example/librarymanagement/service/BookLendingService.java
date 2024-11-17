@@ -17,6 +17,6 @@ public interface BookLendingService {
     ResponseData<BookLendingDto> getBookLendingById(Long id);
     ResponseData<String> deleteBookLendingById(Long id);
     ResponseData<BookLendingDto> getBookLendingByEmailBookId(String email, Long bookId);
-
+    ResponseData<BookLendingDto> updateBookLending(Long bookLendingId, BookLendingForm form);
 
 }

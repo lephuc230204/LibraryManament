@@ -122,6 +122,12 @@ public class AdminController {
     public ResponseEntity<ResponseData<BookLendingDto>> getBookLendingById(@PathVariable("id") Long id){
         return ResponseEntity.ok(bookLendingService.getBookLendingById(id));
     }
+
+    @PutMapping("/book-lending/update/{bookLendingId}")
+    public ResponseEntity<ResponseData<BookLendingDto>> updateBookLending(@PathVariable Long bookLendingId, @RequestBody BookLendingForm form) {
+        return ResponseEntity.ok(bookLendingService.updateBookLending(bookLendingId,form));
+    }
+
     @DeleteMapping("/book-lending/delete/{id}")
     public ResponseEntity<ResponseData<String>> deleteBookLendingById(@PathVariable("id") Long id){
         return ResponseEntity.ok(bookLendingService.deleteBookLendingById(id));

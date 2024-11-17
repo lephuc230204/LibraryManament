@@ -162,4 +162,30 @@ public class BookLendingImpl implements BookLendingService {
         }
         return new ResponseData<>(200,"get book successfully",BookLendingDto.toDto(bookLending));
     }
+
+    @Override
+    public ResponseData<BookLendingDto> updateBookLending(Long bookLendingId,BookLendingForm form) {
+        BookLending bookLending  = bookLendingRepository.findById(bookLendingId).orElse(null);;
+
+        if(bookLending==null){
+            log.error("BookLending not found for ID: {}", bookLendingId);
+            return new ResponseError<>(404, "BookLending not found");
+        }
+
+        if (form.getEmail() != null) {
+            User user = userRepository.findByEmail(form.getEmail()).orElse(null);
+            if (user == null) {
+                log.error("User not found with email: {}", form.getEmail());
+                return new ResponseError<>(404, "User not found with email: ");
+            }
+            bookLending.setUser(user);
+        }
+        if (form.getDueDate() != null){
+            bookLending.setDueDate(form.getDueDate());
+        }
+
+        bookLendingRepository.save(bookLending);
+
+        return new ResponseData<>(200, "BookLending updated successfully",BookLendingDto.toDto(bookLending));
+    }
 }
