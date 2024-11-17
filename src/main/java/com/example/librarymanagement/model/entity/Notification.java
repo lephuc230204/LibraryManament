@@ -31,6 +31,7 @@ public class Notification {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     private LocalDate createDate;
+    @Enumerated(EnumType.STRING)
     private NotificationStatus notificationStatus;
 
     public enum NotificationStatus{
@@ -41,7 +42,8 @@ public class Notification {
     public enum NotificationType {
         CARD_DUE_DATE,
         LENDING_DUE_DATE,
-        RESERVATION_DONE
+        RESERVATION_DONE,
+        RESERVATION_CANCELED
     }
 
     public void setRelatedObject(Object object) {
@@ -50,6 +52,8 @@ public class Notification {
         } else if (type == NotificationType.LENDING_DUE_DATE && object instanceof BookLending) {
             this.relatedObject = object;
         } else if (type == NotificationType.RESERVATION_DONE && object instanceof BookReservation) {
+            this.relatedObject = object;
+        } else if (type == NotificationType.RESERVATION_CANCELED && object instanceof BookReservation) {
             this.relatedObject = object;
         } else {
             throw new IllegalArgumentException("Invalid object type for the given NotificationType");
