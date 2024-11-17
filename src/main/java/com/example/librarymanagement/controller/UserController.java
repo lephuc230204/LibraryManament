@@ -1,5 +1,6 @@
 package com.example.librarymanagement.controller;
 
+import com.example.librarymanagement.model.dto.CardLibraryDto;
 import com.example.librarymanagement.model.dto.UserBasic;
 import com.example.librarymanagement.payload.request.ChangePasswordForm;
 import com.example.librarymanagement.payload.request.UserForm;
@@ -34,5 +35,9 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<ResponseData<UserBasic> > getCurrentUser(Principal principal) {return ResponseEntity.ok(userService.getMe(principal));
     }
-
+    // lay card library
+    @GetMapping("/card-library/me")
+    public ResponseEntity<ResponseData<CardLibraryDto>> getMyCardLibrary(Principal principal) {
+        return ResponseEntity.ok(userService.getMyCardLibrary(principal));
+    }
 }

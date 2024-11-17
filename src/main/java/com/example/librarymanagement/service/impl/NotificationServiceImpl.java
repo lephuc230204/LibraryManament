@@ -45,8 +45,8 @@ public class NotificationServiceImpl implements NotificationService {
         for (BookLending bookLending : bookLendings) {
             // Tạo thông báo cho mỗi BookLending
             Notification notification = new Notification();
-            notification.setTitle("Sắp đến hạn trả sách ");
-            notification.setContent("Sách " + bookLending.getBook().getBookName() + " bạn đang mượn phải trả trong 2 ngày tới.");
+            notification.setTitle("Book Due Soon");
+            notification.setContent("The book " + bookLending.getBook().getBookName() + " you borrowed is due within the next 2 days.");
             notification.setType(Notification.NotificationType.LENDING_DUE_DATE);
             notification.setUser(bookLending.getUser());  // Set user who borrowed the book
             notification.setCreateDate(LocalDate.now());
@@ -94,8 +94,8 @@ public class NotificationServiceImpl implements NotificationService {
         for (CardLibrary cardLibrary : cardLibraries) {
             // Tạo thông báo cho mỗi BookLending
             Notification notification = new Notification();
-            notification.setTitle("Thẻ thư viện sắp hết hạn");
-            notification.setContent("Thẻ số : " + cardLibrary.getCardNumber() + " chỉ còn hạn sử dụng trong 2 ngày ");
+            notification.setTitle("Library Card Expiration Soon");
+            notification.setContent("The card number: " + cardLibrary.getCardNumber() + " will expire in 2 days.");
             notification.setType(Notification.NotificationType.LENDING_DUE_DATE);
             notification.setUser(cardLibrary.getUser());  // Set user who borrowed the book
             notification.setCreateDate(LocalDate.now());

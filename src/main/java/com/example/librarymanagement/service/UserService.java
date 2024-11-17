@@ -1,8 +1,10 @@
 package com.example.librarymanagement.service;
 
 
+import com.example.librarymanagement.model.dto.CardLibraryDto;
 import com.example.librarymanagement.model.dto.UserBasic;
 import com.example.librarymanagement.model.dto.UserDto;
+import com.example.librarymanagement.model.entity.CardLibrary;
 import com.example.librarymanagement.payload.request.ChangePasswordForm;
 import com.example.librarymanagement.payload.request.UserForm;
 import com.example.librarymanagement.payload.response.ResponseData;
@@ -21,5 +23,5 @@ public interface UserService {
     ResponseData<String> restore(Long id);
     ResponseData<UserBasic> getMe(Principal principal);
     ResponseData<String> updateMe(Principal principal, UserForm form);
-
+    ResponseData<CardLibraryDto> getMyCardLibrary(Principal principal);
 }
