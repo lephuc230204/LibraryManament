@@ -1,7 +1,9 @@
 package com.example.librarymanagement.service.impl;
 
+import com.example.librarymanagement.model.dto.CardLibraryDto;
 import com.example.librarymanagement.model.dto.UserBasic;
 import com.example.librarymanagement.model.dto.UserDto;
+import com.example.librarymanagement.model.entity.CardLibrary;
 import com.example.librarymanagement.model.entity.Role;
 import com.example.librarymanagement.model.entity.User;
 import com.example.librarymanagement.payload.request.ChangePasswordForm;
@@ -104,6 +106,8 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return new ResponseData<>(200, "User updated successfully");
     }
+
+
     @Override
     public ResponseData<String> delete(Long id) {
         User user = userRepository.findById(id)
@@ -135,5 +139,13 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         UserDto userDto = UserDto.to(user); // Sử dụng UserDto.to(user)
         return new ResponseData<>(200, "User retrieved successfully", userDto);
+    }
+
+    @Override
+    public ResponseData<CardLibraryDto> getMyCardLibrary(Principal principal) {
+        User user = userRepository.findByEmail(principal.getName())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        CardLibrary cardLibrary = user.getCardLibrary();
+        return new ResponseData<>(200,"get card successfully",CardLibraryDto.toDto(cardLibrary));
     }
 }
