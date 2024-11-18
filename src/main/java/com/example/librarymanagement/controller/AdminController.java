@@ -113,7 +113,7 @@ public class AdminController {
     }
 
     // laays bookLiding theo email va bookId
-    @GetMapping("/book-lending/get-email-booId")
+    @PostMapping("/book-lending/get-email-booId")
     public ResponseEntity<ResponseData<BookLendingDto>> getBookLendingByEmailAndBookId(@RequestBody BookLendingGetByUserAndBookForm form) {
         return ResponseEntity.ok(bookLendingService.getBookLendingByEmailBookId(form.getEmail(),form.getBookId()));
     }
