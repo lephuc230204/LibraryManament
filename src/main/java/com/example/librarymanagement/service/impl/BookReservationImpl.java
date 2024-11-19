@@ -45,7 +45,7 @@ public class BookReservationImpl implements BookReservationService {
 
         if (user == null) {
             log.error("User not found for email: {}", bookReservationForm.getEmail());
-            return new ResponseError<>(404, "Logged in user not found");
+            return new ResponseError<>(404, "User not found");
         }
 
         // Find the book by ID
