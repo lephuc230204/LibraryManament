@@ -1,5 +1,6 @@
 package com.example.librarymanagement.repository;
 
+import com.example.librarymanagement.model.entity.Book;
 import com.example.librarymanagement.model.entity.BookLending;
 import com.example.librarymanagement.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,5 +21,8 @@ public interface BookLendingRepository extends JpaRepository<BookLending, Long> 
 
     @Query("SELECT b FROM BookLending b WHERE b.dueDate BETWEEN :startDate AND :endDate")
     List<BookLending> findAllWithDueDateWithinNextTwoDays(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    @Query("SELECT b FROM BookLending b WHERE b.book = :book AND b.returnDate IS NULL")
+    Optional<BookLending> findBookLendingByBookAndReturnDateIsNull(@Param("book") Book book);
 
 }

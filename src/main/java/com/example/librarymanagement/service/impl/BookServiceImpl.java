@@ -6,10 +6,7 @@ import com.example.librarymanagement.model.entity.*;
 import com.example.librarymanagement.payload.request.BookForm;
 import com.example.librarymanagement.payload.response.ResponseData;
 import com.example.librarymanagement.payload.response.ResponseError;
-import com.example.librarymanagement.repository.AuthorRepository;
-import com.example.librarymanagement.repository.BookRepository;
-import com.example.librarymanagement.repository.CategoryRepository;
-import com.example.librarymanagement.repository.CrackRepository;
+import com.example.librarymanagement.repository.*;
 import com.example.librarymanagement.service.BookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +15,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -39,6 +33,10 @@ public class BookServiceImpl implements BookService {
     private AuthorRepository authorRepository;
     @Autowired
     private CrackRepository crackRepository;
+    @Autowired
+    private BookReservationRepository bookReservationRepository;
+    @Autowired
+    private BookLendingRepository bookLendingRepository;
 
     @Override
     public ResponseData<Page<BookDto>> getAll(int n, int size) {
@@ -196,6 +194,19 @@ public class BookServiceImpl implements BookService {
         // LAY SACH VOI ID
         Book book = bookRepository.findById(bookId).orElse(null);
         if (book == null) return new ResponseError<>(400, "Book not found");
+
+        //check booklending
+        BookLending currentBookLending = bookLendingRepository.findBookLendingByBookAndReturnDateIsNull(book).orElse(null);
+        if (currentBookLending != null){
+            log.error("Books are being borrowed and cannot be deleted");
+            return new ResponseError<>(400,"Books are being borrowed and cannot be deleted");
+        }
+        //check book reservation
+        BookReservation currentReservation = bookReservationRepository.findBookReservationByBook(book).orElse(null);
+        if (currentReservation != null){
+            log.error("Books are being Reservation and cannot be deleted");
+            return new ResponseError<>(400,"Books are being Reservation and cannot be deleted");
+        }
         // XOA SACH
         bookRepository.delete(book);
 
@@ -224,4 +235,5 @@ public class BookServiceImpl implements BookService {
         }
         return category;
     }
+
 }

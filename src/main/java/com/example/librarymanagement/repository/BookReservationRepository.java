@@ -1,6 +1,7 @@
 package com.example.librarymanagement.repository;
 
 import com.example.librarymanagement.model.entity.Book;
+import com.example.librarymanagement.model.entity.BookLending;
 import com.example.librarymanagement.model.entity.BookReservation;
 import com.example.librarymanagement.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +19,5 @@ public interface BookReservationRepository extends JpaRepository<BookReservation
     List<BookReservation> findByUserId(Long id);
 
     boolean existsByBookAndStatus(Book book, BookReservation.Status status);
+    Optional<BookReservation> findBookReservationByBook(Book book);
 }

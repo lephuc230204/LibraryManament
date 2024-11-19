@@ -1,8 +1,7 @@
 package com.example.librarymanagement.service;
 
 import com.example.librarymanagement.model.dto.BookDto;
-import com.example.librarymanagement.model.entity.Author;
-import com.example.librarymanagement.model.entity.Category;
+import com.example.librarymanagement.model.entity.*;
 import com.example.librarymanagement.payload.request.BookForm;
 import com.example.librarymanagement.payload.response.ResponseData;
 import org.springframework.data.domain.Page;
