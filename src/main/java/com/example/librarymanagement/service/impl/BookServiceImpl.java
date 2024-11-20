@@ -41,7 +41,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public ResponseData<Page<BookDto>> getAll(int n, int size) {
         log.info("Retrieving list of books");
-        Pageable pageable = PageRequest.of(n,size, Sort.by(Sort.Order.asc("bookName")));
+        Pageable pageable = PageRequest.of(n,size, Sort.by(Sort.Order.asc("bookId")));
 
         Page<Book> pageBook = bookRepository.findAll(pageable);
         Page<BookDto> data = pageBook.map(BookDto::toDto);

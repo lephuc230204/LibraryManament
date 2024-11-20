@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseData<Page<UserDto>> getAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size,Sort.by(Sort.Order.asc("username")));
+        Pageable pageable = PageRequest.of(page, size,Sort.by(Sort.Order.asc("userId")));
 
         Page<User> usersPage = userRepository.findByRoleName("ROLE_USER",pageable);
         Page<UserDto> usersDtoPage = usersPage.map(UserDto::to);
