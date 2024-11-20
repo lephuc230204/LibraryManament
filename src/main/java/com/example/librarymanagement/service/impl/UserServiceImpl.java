@@ -52,7 +52,8 @@ public class UserServiceImpl implements UserService {
         log.info("Search user by "+query);
         Pageable pageable = PageRequest.of(page,size);
 
-        Page<User> userPage = userRepository.searchUsers(query,pageable);
+        Page<User> userPage = userRepository
+                .searchUsers(query,pageable);
         Page<UserDto> userDtoPage = userPage.map(UserDto::to);
 
         return new ResponseData<>(200,"Retrieved search users successfully", userDtoPage);

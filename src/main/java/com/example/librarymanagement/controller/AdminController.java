@@ -184,10 +184,9 @@ public class AdminController {
             @RequestParam String query,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
+
         return ResponseEntity.ok(userService.searchUser(page, size, query));
     }
-
-
     @PostMapping("/users/register")
     public ResponseEntity<ResponseData<UserDto> > register(@RequestBody SignUpForm form){
         return ResponseEntity.ok(authService.register(form));
