@@ -48,17 +48,15 @@ public class UserServiceImpl implements UserService {
 
         return new ResponseData<>(200, "Retrieved users successfully", usersDtoPage);
     }
-    @Override
-    public ResponseData<List<UserDto>> searchUser(String query) {
-        log.info("Đang tìm kiếm người dùng ");
-        List<User> users = userRepository.searchUsersByEmailContaining(query); // Tìm kiếm email chứa chuỗi query
+    public ResponseData<Page<UserDto>> searchUser(int page, int size, String query){
+        log.info("Search user by "+query);
+        Pageable pageable = PageRequest.of(page,size);
 
-        List<UserDto> userDtos = users.stream()
-                .map(UserDto::to)
-                .collect(Collectors.toList());
+        Page<User> userPage = userRepository.searchUsers(query,pageable);
+        Page<UserDto> userDtoPage = userPage.map(UserDto::to);
 
-        log.info("Tim kiem thanh cong");
-        return new ResponseData<>(200, "Search results retrieved successfully", userDtos);
+        return new ResponseData<>(200,"Retrieved search users successfully", userDtoPage);
+
     }
     @Override
     public ResponseData<String> changePassword(ChangePasswordForm request, Principal connectedUser) {

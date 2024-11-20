@@ -4,18 +4,16 @@ package com.example.librarymanagement.service;
 import com.example.librarymanagement.model.dto.CardLibraryDto;
 import com.example.librarymanagement.model.dto.UserBasic;
 import com.example.librarymanagement.model.dto.UserDto;
-import com.example.librarymanagement.model.entity.CardLibrary;
 import com.example.librarymanagement.payload.request.ChangePasswordForm;
 import com.example.librarymanagement.payload.request.UserForm;
 import com.example.librarymanagement.payload.response.ResponseData;
 import org.springframework.data.domain.Page;
 
 import java.security.Principal;
-import java.util.List;
 
 public interface UserService {
     ResponseData<Page<UserDto>> getAll(int page, int size);
-    ResponseData<List<UserDto>> searchUser(String query);
+    ResponseData<Page<UserDto>> searchUser(int page, int size, String query);
     ResponseData<UserDto> getById(Long id);
     ResponseData<String> changePassword(ChangePasswordForm request, Principal connectedUser);
     ResponseData<String> update(Long id, UserForm form);

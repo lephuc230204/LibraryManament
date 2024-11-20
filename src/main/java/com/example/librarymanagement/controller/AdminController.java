@@ -180,8 +180,11 @@ public class AdminController {
     }
     // chua xong
     @GetMapping("/users/search/")
-    public ResponseEntity<ResponseData<List<UserDto>>> searchUser(@RequestParam String email){
-        return ResponseEntity.ok(userService.searchUser(email));
+    public ResponseEntity<ResponseData<Page<UserDto>>> searchUser(
+            @RequestParam String query,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(userService.searchUser(page, size, query));
     }
 
 
