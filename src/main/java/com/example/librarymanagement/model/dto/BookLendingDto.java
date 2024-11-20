@@ -23,7 +23,7 @@ public class BookLendingDto {
     private LocalDate dueDate;
     @JsonFormat( pattern = "dd-MM-yyyy")
     private LocalDate returnDate;
-    private Long userid;
+    private String email;
     private Long staffid;
 
     public static BookLendingDto toDto(BookLending bookLending) {
@@ -37,7 +37,7 @@ public class BookLendingDto {
                 .dueDate(bookLending.getDueDate())
                 .returnDate(bookLending.getReturnDate())
                 .staffid(bookLending.getStaff().getId())
-                .userid(bookLending.getUser().getId())
+                .email(bookLending.getUser().getEmail())
                 .build();
     }
 }

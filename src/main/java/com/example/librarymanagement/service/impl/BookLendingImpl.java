@@ -180,7 +180,7 @@ public class BookLendingImpl implements BookLendingService {
             User user = userRepository.findByEmail(form.getEmail()).orElse(null);
             if (user == null) {
                 log.error("User not found with email: {}", form.getEmail());
-                return new ResponseError<>(404, "User not found with email: ");
+                return new ResponseError<>(404, "User not found with email");
             }
             bookLending.setUser(user);
         }
