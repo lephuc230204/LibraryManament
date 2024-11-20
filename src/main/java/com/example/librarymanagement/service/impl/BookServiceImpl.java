@@ -134,8 +134,8 @@ public class BookServiceImpl implements BookService {
         }
 
         book.setBookName(form.getBookName());
-        book.setQuantity(form.getQuantity());
-        book.setCurrentQuantity(form.getQuantity());
+        book.setQuantity(book.getQuantity()+form.getQuantity());
+        book.setCurrentQuantity(book.getCurrentQuantity()+form.getQuantity());
         book.setPublisher(form.getPublisher());
         book.setPostingDate(LocalDate.now());
 
