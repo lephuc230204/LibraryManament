@@ -67,12 +67,6 @@ public class BookReservationImpl implements BookReservationService {
             return new ResponseError<>(400, "Reservation already exists for this book and user.");
         }
 
-        // Check if the book is reserved by another user
-        if (bookReservationRepository.existsByBookAndStatus(book, BookReservation.Status.PENDING)) {
-            log.error("Book with ID: {} is already reserved by another user.", book.getBookId());
-            return new ResponseError<>(400, "This book is already reserved by another user.");
-        }
-
         // Create a new reservation with status PENDING
         BookReservation bookReservation = new BookReservation();
         bookReservation.setStatus(BookReservation.Status.PENDING);
@@ -209,13 +203,13 @@ public class BookReservationImpl implements BookReservationService {
 
         // Kiểm tra nếu status là CONFIRMED thì tạo thông báo
         Notification notification = new Notification();
-        notification.setTitle("Sách bạn đã đặt");
+        notification.setTitle("Book Reservation");
 
         if (bookReservation.getStatus() == BookReservation.Status.CONFIRMED) {
-            notification.setContent("Sách " + bookReservation.getBook().getBookName() + " bạn đặt đã có, hãy đến thư viện để nhận");
+            notification.setContent(bookReservation.getBook().getBookName() + "is available, please come to the library to pick it up");
             notification.setType(Notification.NotificationType.RESERVATION_DONE);
         } else {
-            notification.setContent("Sách " + bookReservation.getBook().getBookName() + " bạn đặt không có hàng, rất xin lỗi vì sự bất tiện này");
+            notification.setContent(bookReservation.getBook().getBookName() + " is out of stock. We are very sorry for the inconvenience");
             notification.setType(Notification.NotificationType.RESERVATION_CANCELED);
         }
 
